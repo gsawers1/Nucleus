@@ -15,6 +15,10 @@ public class PeopleList
 
     }
 
+    /**
+     * Populate the list of people
+     * @throws SQLException
+     */
     public void populateList() throws SQLException {
         String sql = "SELECT * FROM People;";
         ResultSet result;
