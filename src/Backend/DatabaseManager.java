@@ -1,3 +1,5 @@
+package Backend;
+
 import java.sql.*;
 public class DatabaseManager{
 
@@ -15,7 +17,6 @@ public class DatabaseManager{
 		{
 			System.out.println("Driver not found");
 		}
-
 
 
 		String url = "jdbc:mysql@csc-db0.csc.calpoly.edu/";
