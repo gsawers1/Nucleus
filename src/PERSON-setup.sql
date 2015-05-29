@@ -1,7 +1,7 @@
 -- Use to set up the tables
 -- Need to generate insert statements
 
-CREATE TABLE Person(
+CREATE TABLE People(
 	ID INT,
 	FirstName VARCHAR(30),
 	LastName VARCHAR(30),
@@ -12,22 +12,24 @@ CREATE TABLE Person(
 	PRIMARY KEY(No) 
 );
 
-CREATE TABLE Location(
+CREATE TABLE Locations(
 	ID INT,
 	Longitude INT,
 	Latitude INT,
+	Time DATETIME,
 	Person INT,
 	PRIMARY KEY(ID),
-	FOREIGN KEY(Person) REFERENCES Person(ID)
+	FOREIGN KEY(Person) REFERENCES People(ID)
 );
 
-CREATE TABLE Interaction(
+CREATE TABLE Interactions(
 	ID INT,
 	Person1 INT,
 	Person2 INT,
 	Location INT,
 	Radius FLOAT,
 	Rank INT,
-	FOREIGN KEY(Person1) REFERENCES Person(ID),
-	FOREIGN KEY(Person2) REFERENCES Person(ID)
+	FOREIGN KEY(Person1) REFERENCES People(ID),
+	FOREIGN KEY(Person2) REFERENCES People(ID),
+	FOREIGN KEY(Location) REFERENCES Locations(ID)
 );

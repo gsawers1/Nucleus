@@ -1,6 +1,7 @@
 import java.sql.*;
 public class DatabaseManager{
-	
+
+	Connection conn;
 	public DatabaseManager()
 	{
 
@@ -13,12 +14,12 @@ public class DatabaseManager{
 		catch (ClassNotFoundException ex)
 		{
 			System.out.println("Driver not found");
-		};
+		}
 
 
-		Connection conn = null;
+
 		String url = "jdbc:mysql@csc-db0.csc.calpoly.edu/";
-		String user = "gsawers"
+		String user = "gsawers";
 		String password = "zq873T!o";
 
 		try {
@@ -29,5 +30,30 @@ public class DatabaseManager{
 			return;
 		}
 		System.out.println("Connection established");
+	}
+
+	public ResultSet sendSelectQuery(String query){
+		ResultSet result;
+		Statement statement;
+		try {
+			 statement = conn.createStatement();
+			result = statement.executeQuery(query);
+		}
+		catch(SQLException ex){
+			System.out.println("Server returned an error: " + ex.getErrorCode());
+			return null;
+		}
+
+		return result;
+	}
+
+	public void populateTables(String query){
+		try {
+			PreparedStatement statement = conn.prepareStatement(query);
+			statement.executeUpdate();
+		}
+		catch(SQLException ex){
+			System.out.println("Server returned an error with code: " + ex.getErrorCode());
+		}
 	}
 }
