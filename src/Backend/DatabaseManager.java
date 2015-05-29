@@ -9,7 +9,7 @@ public class DatabaseManager{
 
 	}
 
-	public void establishConnection(){
+	public boolean establishConnection(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 		}
@@ -28,9 +28,10 @@ public class DatabaseManager{
 		}
 		catch(SQLException ex){
 			System.out.println("Could not establish connection");
-			return;
+			return false;
 		}
 		System.out.println("Connection established");
+		return true;
 	}
 
 	public ResultSet sendSelectQuery(String query){
@@ -38,7 +39,7 @@ public class DatabaseManager{
 		Statement statement;
 		try {
 			 statement = conn.createStatement();
-			result = statement.executeQuery(query);
+			 result = statement.executeQuery(query);
 		}
 		catch(SQLException ex){
 			System.out.println("Server returned an error: " + ex.getErrorCode());

@@ -1,19 +1,25 @@
 package Backend;
 
+import java.sql.Date;
+
 public class Person
 {
-    private int personIDA;
+    private int ID;
 
-    private int personIDB;
+    private String firstName;
 
-    private Location infectionArea;
+    private String lastName;
 
-    private Range infectionPeriod;
+    private boolean infected;
 
-    private double infectionLiklihood;
+    private Date timeReported;
 
-    public Person()
-    {
-
+    public Person(int ID, String first, String last, boolean infected, Date time){
+        this.ID = ID;
+        firstName = first;
+        lastName = last;
+        this.infected = infected;
+        timeReported = time;
     }
+
 }
