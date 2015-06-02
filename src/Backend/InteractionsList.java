@@ -6,14 +6,13 @@ import java.util.TreeSet;
 public class InteractionsList
 {
     private TreeSet<Interaction> interactions = new TreeSet<Interaction>();
-    private DatabaseManager dbms = new DatabaseManager();
 
     public InteractionsList()
     {
 
     }
 
-    public void populateList() throws SQLException{
+    public void populateList(DatabaseManager dbms) throws SQLException{
         /***
          * Needs to be checked
          */
@@ -28,25 +27,23 @@ public class InteractionsList
                 "AND TIME_TO_SEC(TIMEDIFF(TimeA,TimeB)) < 300 ;\n";
 
         ResultSet result;
-        boolean connected = dbms.establishConnection();
 
-        if(connected){
-            result = dbms.sendSelectQuery(sql);
-            boolean areentrys = result.next();
-            int i = 0;
-            while(areentrys){
-                Interaction next = new Interaction(i++,
-                        result.getInt("IDA"),
-                        result.getInt("IDB"),
-                        new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
-                                (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
-                                        result.getInt("LongA") - result.getInt("LongB"))),
-                        new Range(result.getDate("TimeA"),result.getDate("TimeB")),
-                        0
-                        );
-                interactions.add(next);
-                areentrys = result.next();
-            }
+        result = dbms.sendSelectQuery(sql);
+        boolean areentrys = result.next();
+        int i = 0;
+        while(areentrys){
+            Interaction next = new Interaction(i++,
+                    result.getInt("IDA"),
+                    result.getInt("IDB"),
+                    new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
+                            (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
+                                    result.getInt("LongA") - result.getInt("LongB"))),
+                    new Range(result.getDate("TimeA"),result.getDate("TimeB")),
+                    0
+                    );
+            interactions.add(next);
+            areentrys = result.next();
+
         }
     }
 }

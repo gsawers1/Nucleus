@@ -17,4 +17,12 @@ public class Location
         this.latitude = latitude;
         this.radius = radius;
     }
+
+    public int getID(){return ID;}
+
+    public int getLongitude(){return longitude;}
+
+    public int getLatitude(){return latitude;}
+
+    public double radius(){return radius;}
 }
