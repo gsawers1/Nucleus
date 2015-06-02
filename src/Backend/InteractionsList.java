@@ -15,16 +15,18 @@ public class InteractionsList
 
     public void populateList() throws SQLException{
         /***
-         * This needs to be changed! DATEDIFF will not detect changes in DATETIME, need to do it a bit differently
+         * Needs to be checked
          */
         String sql = "SELECT P1.ID AS IDA, P2.ID AS IDB, L1.ID AS LIDA, L1.Latitude AS LatA,\n" +
                 "L1.Longitude AS LongA, L2.Latitude AS LatB, L2.Longitude AS LongB, \n" +
-                "L1.Time AS TimeA, L2.Time AS TimeB \n"+
+                "L1.TimeOfDay AS TimeA, L2.TimeOfDay AS TimeB, L1.Day AS DayA, L2.Day AS DayB \n"+
                 "FROM People P1, People P2, Locations L1, Locations L2\n" +
-                "WHERE (L1.Longitude - L2.Longitude < 2 AND L1.Longitude - L2.Longitude > -2)\n" +
-                "AND (L1.Latitude - L2.Latitude < 2 AND L1.Latitude - L2.Latitude > -2)\n" +
+                "WHERE (LongA - LongB < 2 AND LongA - LongB > -2)\n" +
+                "AND (LatA - LatB < 2 AND LatA - LatB > -2)\n" +
                 "AND L1.Person <> L2.Person\n" +
-                "AND DATEDIFF(L1.Time, L2.Time) = 0;\n";
+                "AND DATEDIFF(DayA, DayB) = 0" +
+                "AND TIME_TO_SEC(TIMEDIFF(TimeA,TimeB)) < 300 ;\n";
+
         ResultSet result;
         boolean connected = dbms.establishConnection();
 

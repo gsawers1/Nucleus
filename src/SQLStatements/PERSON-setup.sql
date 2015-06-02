@@ -16,7 +16,8 @@ CREATE TABLE Locations(
 	ID INT,
 	Longitude INT,
 	Latitude INT,
-	Time DATETIME,
+	Day DATE,
+	TimeOfDay TIME,
 	Person INT,
 	PRIMARY KEY(ID),
 	FOREIGN KEY(Person) REFERENCES People(ID)
