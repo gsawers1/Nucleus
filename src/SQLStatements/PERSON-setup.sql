@@ -28,7 +28,7 @@ CREATE TABLE Interactions(
 	Person2 INT,
 	Location INT,
 	Radius FLOAT,
-	Rank INT,
+	Rank FLOAT,
 	FOREIGN KEY(Person1) REFERENCES People(ID),
 	FOREIGN KEY(Person2) REFERENCES People(ID),
 	FOREIGN KEY(Location) REFERENCES Locations(ID)

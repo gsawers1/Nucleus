@@ -1,6 +1,6 @@
 package Backend;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Range
 {
@@ -8,8 +8,9 @@ public class Range
 
     private Date upperBound;
 
-    public Range()
+    public Range(Date lowerBound, Date upperBound)
     {
-
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
     }
 }

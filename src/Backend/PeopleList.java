@@ -26,13 +26,15 @@ public class PeopleList
 
         if(connected){
             result = dbms.sendSelectQuery(sql);
-            while(!result.isLast()){
+            boolean areentrys = result.next();
+            while(areentrys){
                 Person next = new Person(result.getInt("ID"),
                                          result.getString("FirstName"),
                                          result.getString("LastName"),
                                          result.getBoolean("Infected"),
                                          result.getDate("TimeReported"));
                 people.add(next);
+                areentrys = result.next();
 
             }
         }
