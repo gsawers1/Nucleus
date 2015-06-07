@@ -17,12 +17,12 @@ public class InteractionsList
     }
 
     /**
-     * Performs the steps to create the interactions HashMap.
+     * Performs the steps to create the interactions Hashtable.
      * First pulls down all interactions from the database using the SQL Query
      * Then creates Interaction objects based on the information retrieved from the database
      * Stores these objects inside of ArrayLists inside the HashMap organized by the ID of the primary person in the interaction.
      *
-     * This way of organizing the HashMap gives us O(1) retrieval time from the HashMap and O(n) time to copy into an organized TreeSet.
+     * This way of organizing the Hashtable gives us O(1) retrieval time from the HashMap and O(n) time to copy into an organized TreeSet.
      *
      * While this makes our space constraint higher, the time it saves on searching the HashMap is potentially worth it.
      *
