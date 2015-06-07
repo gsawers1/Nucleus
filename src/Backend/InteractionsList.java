@@ -70,7 +70,7 @@ public class InteractionsList
     }
 
     /**
-     * Retrieves the interaction Set
+     * Retrieves the set of interactions for a specified person.
      * @param target
      * @return
      */

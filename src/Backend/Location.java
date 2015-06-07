@@ -26,14 +26,14 @@ public class Location
 
     public double radius(){return radius;}
 
-    @Override
-    public boolean equals(Object o){
-        if(o == null || !(o instanceof Location)) return false;
-
-        Location l = (Location) o;
-        if(longitude == l.getLatitude() && longitude == l.getLongitude())
-            return true;
-        else
-            return false;
-    }
+//    @Override
+//    public boolean equals(Object o){
+//        if(o == null || !(o instanceof Location)) return false;
+//
+//        Location l = (Location) o;
+//        if(longitude == l.getLatitude() && longitude == l.getLongitude())
+//            return true;
+//        else
+//            return false;
+//    }
 }
