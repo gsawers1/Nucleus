@@ -2,16 +2,33 @@ package Backend;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
+
+
 public class InteractionsList
 {
-    private TreeSet<Interaction> interactions = new TreeSet<Interaction>();
+    private HashMap<Integer, ArrayList<Interaction>> interactions = new HashMap<Integer, ArrayList<Interaction>>();
 
     public InteractionsList()
     {
 
     }
 
+    /**
+     * Performs the steps to create the interactions HashMap.
+     * First pulls down all interactions from the database using the SQL Query
+     * Then creates Interaction objects based on the information retrieved from the database
+     * Stores these objects inside of ArrayLists inside the HashMap organized by the ID of the primary person in the interaction.
+     *
+     * This way of organizing the HashMap gives us O(1) retrieval time from the HashMap and O(n) time to copy into an organized TreeSet.
+     *
+     * While this makes our space constraint higher, the time it saves on searching the HashMap is potentially worth it.
+     *
+     * @param dbms
+     * @throws SQLException
+     */
     public void populateList(DatabaseManager dbms) throws SQLException{
         /***
          * Needs to be checked
@@ -27,13 +44,15 @@ public class InteractionsList
                 "AND TIME_TO_SEC(TIMEDIFF(TimeA,TimeB)) < 300 ;\n";
 
         ResultSet result;
+        ArrayList<Interaction> currentSet;
 
         result = dbms.sendSelectQuery(sql);
         boolean areentrys = result.next();
         int i = 0;
         while(areentrys){
+            int personID = result.getInt("IDA");
             Interaction next = new Interaction(i++,
-                    result.getInt("IDA"),
+                    personID,
                     result.getInt("IDB"),
                     new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
                             (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
@@ -41,9 +60,29 @@ public class InteractionsList
                     new Range(result.getDate("TimeA"),result.getDate("TimeB")),
                     0
                     );
-            interactions.add(next);
+
+            currentSet = interactions.get(personID);
+            currentSet.add(next);
+            interactions.put(personID, currentSet);
             areentrys = result.next();
 
         }
+    }
+
+    /**
+     * Retrieves the interaction Set
+     * @param target
+     * @return
+     */
+    public TreeSet<Interaction> getInteractionByPerson(Person target){
+        TreeSet<Interaction> returnSet = new TreeSet<Interaction>();
+        ArrayList<Interaction> targetSet;
+        int id = target.getID();
+
+        targetSet = interactions.get(id);
+        for(Interaction i : targetSet)
+            returnSet.add(i);
+
+        return returnSet;
     }
 }

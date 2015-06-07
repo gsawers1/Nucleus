@@ -16,9 +16,9 @@ public class Runner {
             interactionList.populateList(dbms);
         }
         catch(SQLException ex){
-            System.out.println("SQL Exception occured when populating list: " + ex.getErrorCode());
+            System.out.println("SQL Exception occurred when populating list: " + ex.getErrorCode());
         }
 
-        
+
     }
 }

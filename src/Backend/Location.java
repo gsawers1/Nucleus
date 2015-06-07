@@ -25,4 +25,15 @@ public class Location
     public int getLatitude(){return latitude;}
 
     public double radius(){return radius;}
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null || !(o instanceof Location)) return false;
+
+        Location l = (Location) o;
+        if(longitude == l.getLatitude() && longitude == l.getLongitude())
+            return true;
+        else
+            return false;
+    }
 }

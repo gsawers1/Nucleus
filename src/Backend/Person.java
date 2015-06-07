@@ -21,5 +21,5 @@ public class Person
         this.infected = infected;
         timeReported = time;
     }
-
+    public int getID(){return ID;}
 }
