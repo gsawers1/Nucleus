@@ -40,7 +40,7 @@ public class InteractionsList
                 "WHERE (LongA - LongB < 2 AND LongA - LongB > -2)\n" +
                 "AND (LatA - LatB < 2 AND LatA - LatB > -2)\n" +
                 "AND L1.Person <> L2.Person\n" +
-                "AND DATEDIFF(DayA, DayB) = 0" +
+                "AND DATEDIFF(DayA, DayB) = 0\n" +
                 "AND TIME_TO_SEC(TIMEDIFF(TimeA,TimeB)) < 300 ;\n";
 
         ResultSet result;

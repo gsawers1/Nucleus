@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 public class PeopleList
 {
-    private HashSet<Person> people;
+    private HashSet<Person> people; //TODO: Change this data structure to something more iterable
 
 
     public PeopleList()
