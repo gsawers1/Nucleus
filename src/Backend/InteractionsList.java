@@ -3,13 +3,13 @@ package Backend;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.TreeSet;
 
 
 public class InteractionsList
 {
-    private HashMap<Integer, ArrayList<Interaction>> interactions = new HashMap<Integer, ArrayList<Interaction>>();
+    private Hashtable<Integer, ArrayList<Interaction>> interactions = new Hashtable<Integer, ArrayList<Interaction>>();
 
     public InteractionsList()
     {

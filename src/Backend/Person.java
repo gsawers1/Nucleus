@@ -1,6 +1,7 @@
 package Backend;
 
 import java.sql.Date;
+import java.util.TreeSet;
 
 public class Person
 {
@@ -14,6 +15,8 @@ public class Person
 
     private Date timeReported;
 
+    private TreeSet<Interaction> personalInteractionSet = new TreeSet<Interaction>();
+
     public Person(int ID, String first, String last, boolean infected, Date time){
         this.ID = ID;
         firstName = first;
@@ -22,4 +25,8 @@ public class Person
         timeReported = time;
     }
     public int getID(){return ID;}
+
+    public void setInteractionSet(TreeSet<Interaction> set){
+        personalInteractionSet = set;
+    }
 }

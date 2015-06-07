@@ -19,6 +19,8 @@ public class Runner {
             System.out.println("SQL Exception occurred when populating list: " + ex.getErrorCode());
         }
 
+        for(Person, )
+
 
     }
 }
