@@ -6,7 +6,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.TreeSet;
 
-
+/**
+ * Class to hold all of the interactions found in the database.
+ *
+ * Uses a big SQL select statement to find interactions in the database and from there populates them into a Hashtable.
+ *
+ * Can then be used to sort the interactions based on who was involved in them.
+ */
 public class InteractionsList
 {
     private Hashtable<Integer, ArrayList<Interaction>> interactions = new Hashtable<Integer, ArrayList<Interaction>>();
@@ -32,6 +38,7 @@ public class InteractionsList
     public void populateList(DatabaseManager dbms) throws SQLException{
         /***
          * Needs to be checked
+         * TODO: Need to modify Database schema so TimeOfDay is an INT type not a TIME type
          */
         String sql = "SELECT P1.ID AS IDA, P2.ID AS IDB, L1.ID AS LIDA, L1.Latitude AS LatA,\n" +
                 "L1.Longitude AS LongA, L2.Latitude AS LatB, L2.Longitude AS LongB, \n" +

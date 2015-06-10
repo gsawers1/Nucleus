@@ -1,10 +1,13 @@
 package Backend;
 
-import java.sql.Date;
 
 /**
  * IMPORTANT!!: I CHANGED THESE TO LONGS BECAUSE THE JAVA DATE CLASS IS DEPRECATED AND IS BASICALLY A LONG WRAPPER
  *  WE WILL HOLD TIME AS MILLISECONDS FROM THE EPOCH (JANUARY 1ST 1970 00:00:00) INSTEAD
+ */
+
+/**
+ * Class that determines a time range. Can be used to determine the length of an interaction or length of infection of a person.
  */
 public class Range
 {

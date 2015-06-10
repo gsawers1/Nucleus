@@ -2,18 +2,15 @@ package Backend;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.TreeSet;
 
 public class PeopleList
 {
-    private HashMap<Integer,Person> people = new HashMap<Integer, Person>(); //TODO: Change this data structure to something more iterable
-
+    private Hashtable<Integer,Person> people = new Hashtable<Integer, Person>();
 
     public PeopleList()
     {
-
     }
 
     /**
@@ -38,12 +35,18 @@ public class PeopleList
         }
     }
 
-    public HashMap<Integer, Person> getPeopleList(){return people;}
+    public Hashtable<Integer, Person> getPeopleList(){return people;}
 
     public Person getPerson(int id){
         return people.get(id);
     }
 
+    /**
+     * Use to assign the interactionSets for each individual person.
+     * @param person The person to assign the set to.
+     * @param interactions The set to assign to the person.
+     * @throws PersonNotFoundException Throws an exception if the person is not in the PeopleList.
+     */
     public void assignInteractions(Person person, TreeSet<Interaction> interactions) throws PersonNotFoundException{
         Person update = people.get(person.getID());
         if(update == null)

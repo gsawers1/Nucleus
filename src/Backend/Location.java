@@ -1,5 +1,9 @@
 package Backend;
 
+/**
+ * A class to represent a Location of where a person has been.
+ * Abstracted so that it does not belong to one person as it does in the database.
+ */
 public class Location
 {
     private int ID;
@@ -26,14 +30,14 @@ public class Location
 
     public double radius(){return radius;}
 
-//    @Override
-//    public boolean equals(Object o){
-//        if(o == null || !(o instanceof Location)) return false;
-//
-//        Location l = (Location) o;
-//        if(longitude == l.getLatitude() && longitude == l.getLongitude())
-//            return true;
-//        else
-//            return false;
-//    }
+    @Override
+    public boolean equals(Object o){
+        if(o == null || !(o instanceof Location)) return false;
+
+        Location l = (Location) o;
+        if(longitude == l.getLatitude() && longitude == l.getLongitude())
+            return true;
+        else
+            return false;
+    }
 }
