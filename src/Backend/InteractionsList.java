@@ -72,7 +72,7 @@ public class InteractionsList
     /**
      * Retrieves the set of interactions for a specified person.
      * @param target
-     * @return
+     * @return The Set of interactions that the person is involved in.
      */
     public TreeSet<Interaction> getInteractionByPerson(Person target){
         TreeSet<Interaction> returnSet = new TreeSet<Interaction>();

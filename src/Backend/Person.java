@@ -29,4 +29,17 @@ public class Person
     public void setInteractionSet(TreeSet<Interaction> set){
         personalInteractionSet = set;
     }
+
+    public TreeSet<Interaction> getInteractionSet(){return personalInteractionSet;}
+
+    /**
+     * Goal of this method is to remove Interactions that would not infect a person
+     * as well as combine interactions that flow into each other (e.g. last longer than the location update interval)
+     * into one interaction.
+     *
+     *
+     */
+    public void consolodateInteractions(){
+
+    }
 }

@@ -12,6 +12,10 @@ public class Interaction implements Comparable<Interaction> {
     private Range timePeriod;
     private double infectionLikelihood;
 
+    private final int LOCATION_UPDATE_TIME = 3600000;
+
+    private int repeats = 0;
+
     public Interaction(int ID, int personA, int personB, Location place, Range time, double infection){
         this.ID = ID;
         this.personIDA = personA;
@@ -53,6 +57,32 @@ public class Interaction implements Comparable<Interaction> {
             return 1;
     }
 
+    public void incrementRepeats(){repeats++;}
+
+    /**
+     * Use to compare two objects for equality when combining interactions
+     * @param other
+     * @return
+     */
+    public boolean shallowEquals(Interaction other){
+        Range otherPeriod = other.getTimePeriod();
+
+        /**
+         * Fair warning this if is ugly
+         *
+         * What it does though is compare people and place for strict equality, then compares if the time ranges
+         * are close to each other.
+         */
+        if(other.contains(personIDA) && other.contains(personIDB) && place.equals(other.getPlace())
+                && ((timePeriod.getLowerBound()-otherPeriod.getUpperBound() < LOCATION_UPDATE_TIME
+                        && timePeriod.getLowerBound()-otherPeriod.getUpperBound() > (-1 * LOCATION_UPDATE_TIME))
+                    || (otherPeriod.getLowerBound()- timePeriod.getUpperBound() < LOCATION_UPDATE_TIME)
+                        && otherPeriod.getLowerBound()- timePeriod.getUpperBound() < (-1 * LOCATION_UPDATE_TIME))){
+            return true;
+        }
+        else
+            return false;
+    }
     /**
      * Added this in to do equals comparison checks but not needed as of yet
      */

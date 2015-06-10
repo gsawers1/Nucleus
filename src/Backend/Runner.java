@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
-public class Runner {
+public class Runner{
 
     private static InteractionsList interactionList = new InteractionsList();
     private static PeopleList peopleList = new PeopleList();
@@ -28,6 +28,12 @@ public class Runner {
         initialList = null;
 
     }
+
+    /**
+     * Get the infection likelihood of a specific interaction
+     * NOTE: Must be handled out here after consolodateInteractions has been run for each person.
+     */
+    public static void getInfectionLikeliHood(){}
 
     /**
      * Puts all the found interactions inside each person object in the peopleList.
