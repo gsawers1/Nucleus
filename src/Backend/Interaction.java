@@ -61,7 +61,7 @@ public class Interaction implements Comparable<Interaction> {
 
     /**
      * Use to compare two objects for equality when combining interactions
-     * @param other
+     * @param other The other interaction
      * @return
      */
     public boolean shallowEquals(Interaction other){

@@ -57,7 +57,7 @@ public class InteractionsList
                     new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
                             (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
                                     result.getInt("LongA") - result.getInt("LongB"))),
-                    new Range(result.getDate("TimeA"),result.getDate("TimeB")),
+                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB")),
                     0
                     );
 
