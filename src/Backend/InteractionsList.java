@@ -48,7 +48,7 @@ public class InteractionsList
                 "WHERE (LongA - LongB < 1.5 AND LongA - LongB > -1.5)\n" +
                 "AND (LatA - LatB < 1.5 AND LatA - LatB > -1.5)\n" +
                 "AND L1.Person <> L2.Person\n" +
-                "AND TimeA-TimeB BETWEEN 300000 AND - 300000 ;\n";
+                "AND TimeA-TimeB BETWEEN 300000 AND -300000 ;\n";
 
         ResultSet result;
         ArrayList<Interaction> currentSet;
@@ -64,8 +64,12 @@ public class InteractionsList
                     new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
                             (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
                                     result.getInt("LongA") - result.getInt("LongB"))),
-                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB"))
+                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB")),
+                    false
                     );
+            /**
+             * Probably need to change this a bit, like change Location distance to the distance formula.
+             */
 
             currentSet = interactions.get(personID);
             currentSet.add(next);

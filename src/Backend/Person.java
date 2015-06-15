@@ -66,6 +66,7 @@ public class Person
                     current = current.combineInteractions(next);
                 }
                 else{
+                    current.setChecked();
                     if(relationships.containsKey(current.getPersonBID())){
                         Relationship update = relationships.get(current.getPersonBID());
                         update.addInteraction(current);
@@ -74,6 +75,7 @@ public class Person
                     else{
                         relationships.put(current.getPersonBID(), new Relationship(current.getPersonB()));
                     }
+                    current = next;
                 }
             }
         }

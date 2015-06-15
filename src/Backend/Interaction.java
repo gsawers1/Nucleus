@@ -11,17 +11,17 @@ public class Interaction implements Comparable<Interaction> {
 
     private Range timePeriod;
 
+    private boolean checked; //Boolean check to see if interaction has been sorted yet. Used for comparing.
 
     private final int LOCATION_UPDATE_TIME = 3600000;
 
-    private int repeats = 0;
-
-    public Interaction(int ID, Person personA, Person personB, Location place, Range time){
+    public Interaction(int ID, Person personA, Person personB, Location place, Range time, boolean checked){
         this.ID = ID;
         this.personA = personA;
         this.personB = personB;
         this.place = place;
         this.timePeriod = time;
+        this.checked = checked;
     }
 
 //    public double getInfectionLikelihood(){ //MOVED TO RELATIONSHIP CLASS
@@ -31,6 +31,10 @@ public class Interaction implements Comparable<Interaction> {
     public Range getTimePeriod(){return timePeriod;}
     public int getPersonBID(){return personB.getID();}
     public Person getPersonB(){return personB;}
+
+    public void setChecked(){
+        checked = true;
+    }
 
 
     /**
@@ -54,18 +58,20 @@ public class Interaction implements Comparable<Interaction> {
     public int compareTo(Interaction other){
         Range otherTime = other.getTimePeriod();
 
-        if(timePeriod.getDuration() > otherTime.getDuration())
-            return -1;
-        if(timePeriod.getLowerBound() < otherTime.getLowerBound())
-            return -1;
-        else
-            return 1;
+        if(checked) {
+            if (timePeriod.getDuration() > otherTime.getDuration())
+                return -1;
+            else
+                return 1;
+        }
+        else {
+            if (timePeriod.getLowerBound() < otherTime.getLowerBound())
+                return -1;
+            else
+                return 1;
+        }
     }
 
-    public void incrementRepeats(Range newTime){
-        timePeriod = newTime;
-        repeats++;
-    }
 
     /**
      * Use to compare two objects for equality when combining interactions
@@ -95,7 +101,7 @@ public class Interaction implements Comparable<Interaction> {
     public Interaction combineInteractions(Interaction later){
 
         Range next = new Range(timePeriod.getLowerBound(), later.getTimePeriod().getUpperBound());
-        return new Interaction(ID, personA, personB, place, next);
+        return new Interaction(ID, personA, personB, place, next, true);
     }
     /**
      * Added this in to do equals comparison checks but not needed as of yet
