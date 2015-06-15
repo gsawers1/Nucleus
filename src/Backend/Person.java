@@ -20,6 +20,12 @@ public class Person
 
     private final int DAYINMILLIS = 86400000;
 
+    private int maxInteractions = 0;
+
+    private double maxAverage = 0;
+
+    private double highestLikelihood = 0;
+
     /**
      * Contains all the relationships a person has. This is a more complete picture of a persons interactions with one
      *  other individual.
@@ -93,11 +99,11 @@ public class Person
      */
     public void buildRelationshipInfectionChance(){
         ArrayList<Double> maxValues = new ArrayList<Double>();
-        maxValues.add(0.0);
-        maxValues.add(0.0);
-        maxValues.add(0.0);
         for(Map.Entry<Integer, Relationship> entry: relationships.entrySet()){
-            maxValues = entry.getValue().computeInfectionLikeliHood((int)(double)maxValues.get(0), maxValues.get(1), maxValues.get(2));
+            maxValues = entry.getValue().computeInfectionLikeliHood(maxInteractions, maxAverage, highestLikelihood);
+            maxInteractions = (int)(double) maxValues.get(0);
+            maxAverage = maxValues.get(1);
+            highestLikelihood = maxValues.get(2);
         }
     }
 }
