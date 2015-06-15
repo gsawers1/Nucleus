@@ -1,10 +1,7 @@
 package Backend;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Runner{
 
@@ -23,9 +20,9 @@ public class Runner{
             System.out.println("SQL Exception occurred when populating list: " + ex.getErrorCode());
         }
 
-        HashMap<Integer, Person> initialList = peopleList.getPeopleList();
+        Hashtable<Integer, Person> initialList = peopleList.getPeopleList();
         initializeListWithInteractions(initialList);
-        initialList = null;
+        initialList = null; //Just clearing this up
 
     }
 
@@ -39,13 +36,14 @@ public class Runner{
      * Puts all the found interactions inside each person object in the peopleList.
      * @param list The list of all people returned from the database
      */
-    public static void initializeListWithInteractions(HashMap<Integer, Person> list){
+    public static void initializeListWithInteractions(Hashtable<Integer, Person> list){
         Iterator it = list.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             TreeSet<Interaction> next = interactionList.getInteractionByPerson((Person) pair.getValue());
             try {
                 peopleList.assignInteractions((Person) pair.getValue(), next);
+                ((Person) pair.getValue()).consolodateInteractions();
             } catch (PersonNotFoundException e) {
                 System.out.println(e.getMessage() + "with personID" + pair.getKey());
             }

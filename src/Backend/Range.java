@@ -24,6 +24,8 @@ public class Range
     public long getLowerBound(){return lowerBound;}
     public long getUpperBound(){return upperBound;}
 
+    public long getDuration(){ return upperBound - lowerBound;}
+
 //    public boolean equals(Object o){
 //        if(o == null || !(o instanceof Location)) return false;
 //

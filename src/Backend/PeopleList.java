@@ -29,7 +29,7 @@ public class PeopleList
                                      result.getString("FirstName"),
                                      result.getString("LastName"),
                                      result.getBoolean("Infected"),
-                                     result.getDate("TimeReported"));
+                                     (long)result.getInt("TimeReported"));
             people.put(ID, next);
             areentrys = result.next();
         }

@@ -48,16 +48,24 @@ public class Interaction implements Comparable<Interaction> {
      * @param other The other interaction to compare to
      * @return -1 if Likelihood of the other interaction is higher, otherwise 1. No tie-breaker has yet been decided.
      */
+    @Override
     public int compareTo(Interaction other){
-        if(infectionLikelihood < other.getInfectionLikelihood())
+        Range otherTime = other.getTimePeriod();
+
+        if(timePeriod.getLowerBound() < otherTime.getLowerBound())
             return -1;
-        else if(infectionLikelihood > other.getInfectionLikelihood())
+        else if(timePeriod.getLowerBound() > otherTime.getLowerBound())
             return 1;
+        else if (timePeriod.getDuration() > otherTime.getDuration())
+            return -1;
         else
             return 1;
     }
 
-    public void incrementRepeats(){repeats++;}
+    public void incrementRepeats(Range newTime){
+        timePeriod = newTime;
+        repeats++;
+    }
 
     /**
      * Use to compare two objects for equality when combining interactions

@@ -6,9 +6,7 @@ CREATE TABLE People(
 	FirstName VARCHAR(30),
 	LastName VARCHAR(30),
 	INT Infected,
-	DATE LowerInfectionTime,
-	DATE UpperInfectionTime,
-	DATE TimeReported,
+	INT TimeReported,
 	PRIMARY KEY(No) 
 );
 
@@ -16,8 +14,7 @@ CREATE TABLE Locations(
 	ID INT,
 	Longitude INT,
 	Latitude INT,
-	Day DATE,
-	TimeOfDay TIME,
+	TimeAndDate INT,
 	Person INT,
 	PRIMARY KEY(ID),
 	FOREIGN KEY(Person) REFERENCES People(ID)

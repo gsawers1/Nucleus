@@ -30,7 +30,7 @@ public class InteractionsList
      *
      * This way of organizing the Hashtable gives us O(1) retrieval time from the HashMap and O(n) time to copy into an organized TreeSet.
      *
-     * While this makes our space constraint higher, the time it saves on searching the HashMap is potentially worth it.
+     * While this makes our space constraint higher, the time it saves on searching the Hashtable is potentially worth it.
      *
      * @param dbms
      * @throws SQLException
@@ -42,13 +42,12 @@ public class InteractionsList
          */
         String sql = "SELECT P1.ID AS IDA, P2.ID AS IDB, L1.ID AS LIDA, L1.Latitude AS LatA,\n" +
                 "L1.Longitude AS LongA, L2.Latitude AS LatB, L2.Longitude AS LongB, \n" +
-                "L1.TimeOfDay AS TimeA, L2.TimeOfDay AS TimeB, L1.Day AS DayA, L2.Day AS DayB \n"+
+                "L1.TimeAndDate AS TimeA, L2.TimeAndDate AS TimeB\n"+
                 "FROM People P1, People P2, Locations L1, Locations L2\n" +
-                "WHERE (LongA - LongB < 2 AND LongA - LongB > -2)\n" +
-                "AND (LatA - LatB < 2 AND LatA - LatB > -2)\n" +
+                "WHERE (LongA - LongB < 1.5 AND LongA - LongB > -1.5)\n" +
+                "AND (LatA - LatB < 1.5 AND LatA - LatB > -1.5)\n" +
                 "AND L1.Person <> L2.Person\n" +
-                "AND DATEDIFF(DayA, DayB) = 0\n" +
-                "AND TIME_TO_SEC(TIMEDIFF(TimeA,TimeB)) < 300 ;\n";
+                "AND TimeA-TimeB BETWEEN 300000 AND - 300000 ;\n";
 
         ResultSet result;
         ArrayList<Interaction> currentSet;
