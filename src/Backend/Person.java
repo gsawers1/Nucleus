@@ -53,9 +53,9 @@ public class Person
      * as well as combine interactions that flow into each other (e.g. last longer than the location update interval)
      * into one interaction.
      *
-     * As it is written, it will make personalInteractionSet inaccurate, as such after it is run we should focus on relationships.
+     * As it is written, it will make personalInteractionSet inaccurate, as such, after it is run we should focus on relationships.
      */
-    public void consolodateInteractions(){
+    public void consolidateInteractions(){
         Iterator itr = personalInteractionSet.iterator();
         if(itr.hasNext()){
             Interaction current = (Interaction) itr.next();

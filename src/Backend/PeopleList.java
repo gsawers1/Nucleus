@@ -53,7 +53,7 @@ public class PeopleList
             throw new PersonNotFoundException("Person not found in the list");
         else {
             update.setInteractionSet(interactions);
-            update.consolodateInteractions();
+            update.consolidateInteractions();
             people.put(update.getID(), update);
         }
     }

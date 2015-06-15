@@ -14,15 +14,13 @@ public class Relationship implements Comparable<Relationship> {
 
     private Person otherPerson;
 
-    private int timesInteracted = 0;
+    private int timesInteracted;
 
-    private int infectionLikelihood;
+    private double infectionLikelihood;
 
     public Relationship(Person other){
         otherPerson = other;
     }
-
-    public void incrementInteractions(){timesInteracted++;}
 
     public void addInteraction(Interaction next){
         interactions.add(next);
@@ -31,5 +29,11 @@ public class Relationship implements Comparable<Relationship> {
     @Override
     public int compareTo(Relationship other){
         return 1;
+    }
+
+    public double computeInfectionLikeliHood(){
+        timesInteracted = interactions.size();
+
+        return 0;
     }
 }

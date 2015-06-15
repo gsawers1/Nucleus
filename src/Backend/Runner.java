@@ -3,6 +3,16 @@ package Backend;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * "Main" class that makes everything happen
+ *
+ * Pulls information down from the database, then performs the steps necessary to organize this data and
+ * analyze it so that we can determine how likely infection was between two people.
+ *
+ * GLOBAL NOTE: As it is currently implemented this iteration has bad space issues. We store interactions multiple times across
+ * different people, and each interaction is stored twice before consolidation. I can see this un-connectiveness between two people
+ * becoming a problem in a full scale implementation.
+ */
 public class Runner{
 
     private static InteractionsList interactionList = new InteractionsList();

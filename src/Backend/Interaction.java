@@ -10,7 +10,7 @@ public class Interaction implements Comparable<Interaction> {
     private Location place;
 
     private Range timePeriod;
-    //private double infectionLikelihood; MOVING THIS TO RELATIONSHIP CLASS
+
 
     private final int LOCATION_UPDATE_TIME = 3600000;
 
@@ -54,11 +54,9 @@ public class Interaction implements Comparable<Interaction> {
     public int compareTo(Interaction other){
         Range otherTime = other.getTimePeriod();
 
-        if(timePeriod.getLowerBound() < otherTime.getLowerBound())
+        if(timePeriod.getDuration() > otherTime.getDuration())
             return -1;
-        else if(timePeriod.getLowerBound() > otherTime.getLowerBound())
-            return 1;
-        else if (timePeriod.getDuration() > otherTime.getDuration())
+        if(timePeriod.getLowerBound() < otherTime.getLowerBound())
             return -1;
         else
             return 1;
