@@ -46,6 +46,8 @@ public class Person
         personalInteractionSet = set;
     }
 
+    public Range getInfectionRange(){return infectionRange;}
+
     public TreeSet<Interaction> getInteractionSet(){return personalInteractionSet;}
 
     /**
@@ -59,23 +61,29 @@ public class Person
         Iterator itr = personalInteractionSet.iterator();
         if(itr.hasNext()){
             Interaction current = (Interaction) itr.next();
-            relationships.put(current.getPersonBID(), new Relationship(current.getPersonB()));
-            while(itr.hasNext()){
+            while(itr.hasNext()) {
                 Interaction next = (Interaction) itr.next();
-                if(current.shallowEquals(next)){
-                    current = current.combineInteractions(next);
-                }
-                else{
-                    current.setChecked();
-                    if(relationships.containsKey(current.getPersonBID())){
-                        Relationship update = relationships.get(current.getPersonBID());
-                        update.addInteraction(current);
-                        relationships.put(current.getPersonBID(), update);
-                    }
-                    else{
-                        relationships.put(current.getPersonBID(), new Relationship(current.getPersonB()));
-                    }
+            //Check if the interaction occurred before or after one of the two people was infected, if it was ignore it.
+                if (current.getTimePeriod().getUpperBound() < current.getPersonB().getInfectionRange().getLowerBound()
+                        || current.getTimePeriod().getUpperBound() < infectionRange.getLowerBound()
+                        || current.getTimePeriod().getLowerBound() > current.getPersonB().getInfectionRange().getUpperBound()
+                        || current.getTimePeriod().getLowerBound() > infectionRange.getUpperBound())
                     current = next;
+
+                else {
+                    if (current.shallowEquals(next)) {
+                        current = current.combineInteractions(next);
+                    } else {
+                        current.setChecked();
+                        if (relationships.containsKey(current.getPersonBID())) {
+                            Relationship update = relationships.get(current.getPersonBID());
+                            update.addInteraction(current);
+                            relationships.put(current.getPersonBID(), update);
+                        } else {
+                            relationships.put(current.getPersonBID(), new Relationship(current.getPersonB()));
+                        }
+                        current = next;
+                    }
                 }
             }
         }

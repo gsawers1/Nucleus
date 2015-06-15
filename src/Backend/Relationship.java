@@ -10,7 +10,7 @@ import java.util.TreeSet;
 public class Relationship implements Comparable<Relationship> {
 
     /**
-     * TreeSet of Interactions,
+     * TreeSet of Interactions
      */
     private TreeSet<Interaction> interactions = new TreeSet<Interaction>();
 
@@ -30,7 +30,7 @@ public class Relationship implements Comparable<Relationship> {
     }
 
     public double getInfectionLikelihood(){return infectionLikelihood;}
-    
+
     @Override
     public int compareTo(Relationship other){
         if(infectionLikelihood > other.getInfectionLikelihood())
@@ -70,6 +70,8 @@ public class Relationship implements Comparable<Relationship> {
          * If someone works with someone else who is sick, they may get 2 interactions each day just on the nature
          *  of how these interactions are computed. These values will need to be tweaked, as I believe prolonged
          *  exposure is a better indicator than being close to someone multiple times, but it is a start.
+         *
+         *  Max first relationship score is 93.75.
          */
         if(maxInteractions == 0){ //First interaction seen
             if(averageInteractionLength > 30) //Interacting with this person for extended periods of time
@@ -94,7 +96,7 @@ public class Relationship implements Comparable<Relationship> {
          *  As I said above, I think interaction length is more important than interaction times. So I built the computation as follows:
          *      1. Increment by an amount relative to what criteria this relationship beats,
          *              this will give it a slight edge to start.
-         *          NOTE: This naturally gives a slight curve, putting higher likelihoods together.
+         *          NOTE: This naturally gives a slight curve, putting higher likelihoods together and spreading out the bottom.
          *              This should result in a few outliers rising to the top.
          *      2. Add/Subtract half the difference between average interaction list.
          *      3. Add/Subtract a third of the difference between number of interactions.
@@ -124,7 +126,7 @@ public class Relationship implements Comparable<Relationship> {
                                     + (timesInteracted - maxInteractions) /3;
                 }
                 else
-                    infectionLikelihood = (highestLikelihood - (100 - highestLikelihood) * 0.3)
+                    infectionLikelihood = (highestLikelihood - (100 - highestLikelihood) * 0.25)
                             - (averageInteractionLength - maxAverage)/2
                                     - (timesInteracted - maxInteractions) /3;
             }
