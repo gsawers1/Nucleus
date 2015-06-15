@@ -1,5 +1,6 @@
 package Backend;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 /**
@@ -54,7 +55,7 @@ public class Relationship implements Comparable<Relationship> {
      *                   Allows for recomputing once all or some relationships have been analyzed.
      * @return
      */
-    public void computeInfectionLikeliHood(int maxInteractions, double maxAverage, int highestLikelihood){
+    public ArrayList<Double> computeInfectionLikeliHood(int maxInteractions, double maxAverage, double highestLikelihood){
         timesInteracted = interactions.size();
 
         for(Interaction i: interactions){
@@ -131,5 +132,11 @@ public class Relationship implements Comparable<Relationship> {
                                     - (timesInteracted - maxInteractions) /3;
             }
         }
+
+        ArrayList<Double> maxValues = new ArrayList<Double>();
+        maxValues.add((double)Math.max(maxInteractions, timesInteracted));
+        maxValues.add(Math.max(averageInteractionLength, maxAverage));
+        maxValues.add(Math.max(infectionLikelihood, highestLikelihood));
+        return maxValues;
     }
 }

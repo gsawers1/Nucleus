@@ -1,8 +1,6 @@
 package Backend;
 
-import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Represents one person from the database.
@@ -69,7 +67,6 @@ public class Person
                         || current.getTimePeriod().getLowerBound() > current.getPersonB().getInfectionRange().getUpperBound()
                         || current.getTimePeriod().getLowerBound() > infectionRange.getUpperBound())
                     current = next;
-
                 else {
                     if (current.shallowEquals(next)) {
                         current = current.combineInteractions(next);
@@ -86,6 +83,21 @@ public class Person
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Compute the infection likelihood of each relationship
+     *
+     * Not the nicest statement in the for loop but whatever it works.
+     */
+    public void buildRelationshipInfectionChance(){
+        ArrayList<Double> maxValues = new ArrayList<Double>();
+        maxValues.add(0.0);
+        maxValues.add(0.0);
+        maxValues.add(0.0);
+        for(Map.Entry<Integer, Relationship> entry: relationships.entrySet()){
+            maxValues = entry.getValue().computeInfectionLikeliHood((int)(double)maxValues.get(0), maxValues.get(1), maxValues.get(2));
         }
     }
 }
