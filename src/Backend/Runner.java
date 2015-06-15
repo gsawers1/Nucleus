@@ -14,6 +14,7 @@ public class Runner{
         try{
             dbms.establishConnection();
             peopleList.populateList(dbms);
+            interactionList.setPeopleList(peopleList);
             interactionList.populateList(dbms);
         }
         catch(SQLException ex){
@@ -21,7 +22,7 @@ public class Runner{
         }
 
         Hashtable<Integer, Person> initialList = peopleList.getPeopleList();
-        initializeListWithInteractions(initialList);
+        initializeListWithInteractions(initialList); //When we run this interactionList will not be accurate but peopleList will.
         initialList = null; //Just clearing this up
 
     }
@@ -43,7 +44,7 @@ public class Runner{
             TreeSet<Interaction> next = interactionList.getInteractionByPerson((Person) pair.getValue());
             try {
                 peopleList.assignInteractions((Person) pair.getValue(), next);
-                ((Person) pair.getValue()).consolodateInteractions();
+
             } catch (PersonNotFoundException e) {
                 System.out.println(e.getMessage() + "with personID" + pair.getKey());
             }

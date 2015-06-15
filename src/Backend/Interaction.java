@@ -4,32 +4,34 @@ public class Interaction implements Comparable<Interaction> {
 
     private final Integer ID;
 
-    private int personIDA;
-    private int personIDB;
+    private Person personA;
+    private Person personB;
 
     private Location place;
 
     private Range timePeriod;
-    private double infectionLikelihood;
+    //private double infectionLikelihood; MOVING THIS TO RELATIONSHIP CLASS
 
     private final int LOCATION_UPDATE_TIME = 3600000;
 
     private int repeats = 0;
 
-    public Interaction(int ID, int personA, int personB, Location place, Range time, double infection){
+    public Interaction(int ID, Person personA, Person personB, Location place, Range time){
         this.ID = ID;
-        this.personIDA = personA;
-        this.personIDB = personB;
+        this.personA = personA;
+        this.personB = personB;
         this.place = place;
         this.timePeriod = time;
-        this.infectionLikelihood = infection;
     }
 
-    public double getInfectionLikelihood(){
-        return infectionLikelihood;
-    }
+//    public double getInfectionLikelihood(){ //MOVED TO RELATIONSHIP CLASS
+//        return infectionLikelihood;
+//    }
     public Location getPlace(){return place;}
     public Range getTimePeriod(){return timePeriod;}
+    public int getPersonBID(){return personB.getID();}
+    public Person getPersonB(){return personB;}
+
 
     /**
      * Checks to see if this interaction involves the given person, determined by ID
@@ -37,7 +39,7 @@ public class Interaction implements Comparable<Interaction> {
      * @return True if the person is in the interaction, otherwise False
      */
     public boolean contains(int targetId){
-        if(targetId == personIDA || targetId == personIDB)
+        if(targetId == personA.getID() || targetId == personB.getID())
             return true;
         else
             return false;
@@ -81,7 +83,7 @@ public class Interaction implements Comparable<Interaction> {
          * What it does though is compare people and place for strict equality, then compares if the time ranges
          * are close to each other.
          */
-        if(other.contains(personIDA) && other.contains(personIDB) && place.equals(other.getPlace())
+        if(other.contains(personA.getID()) && other.contains(personB.getID()) && place.equals(other.getPlace())
                 && ((timePeriod.getLowerBound()-otherPeriod.getUpperBound() < LOCATION_UPDATE_TIME
                         && timePeriod.getLowerBound()-otherPeriod.getUpperBound() > (-1 * LOCATION_UPDATE_TIME))
                     || (otherPeriod.getLowerBound()- timePeriod.getUpperBound() < LOCATION_UPDATE_TIME)
@@ -90,6 +92,12 @@ public class Interaction implements Comparable<Interaction> {
         }
         else
             return false;
+    }
+
+    public Interaction combineInteractions(Interaction later){
+
+        Range next = new Range(timePeriod.getLowerBound(), later.getTimePeriod().getUpperBound());
+        return new Interaction(ID, personA, personB, place, next);
     }
     /**
      * Added this in to do equals comparison checks but not needed as of yet

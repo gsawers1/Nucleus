@@ -16,6 +16,7 @@ import java.util.TreeSet;
 public class InteractionsList
 {
     private Hashtable<Integer, ArrayList<Interaction>> interactions = new Hashtable<Integer, ArrayList<Interaction>>();
+    private PeopleList personList;
 
     public InteractionsList()
     {
@@ -58,13 +59,12 @@ public class InteractionsList
         while(areentrys){
             int personID = result.getInt("IDA");
             Interaction next = new Interaction(i++,
-                    personID,
-                    result.getInt("IDB"),
+                    personList.getPerson(result.getInt("IDA")),
+                    personList.getPerson(result.getInt("IDB")),
                     new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
                             (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
                                     result.getInt("LongA") - result.getInt("LongB"))),
-                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB")),
-                    0
+                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB"))
                     );
 
             currentSet = interactions.get(personID);
@@ -91,4 +91,7 @@ public class InteractionsList
 
         return returnSet;
     }
+
+    public void setPeopleList(PeopleList people){personList = people;}
+    public void clearPeopleList(){personList = null;}
 }
