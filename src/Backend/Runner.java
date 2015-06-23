@@ -39,7 +39,7 @@ public class Runner{
 
     /**
      * Get the infection likelihood of a specific interaction
-     * NOTE: Must be handled out here after consolodateInteractions has been run for each person.
+     * NOTE: Must be handled out here after consolidateInteractions has been run for each person.
      */
     public static void getInfectionLikeliHood(){}
 

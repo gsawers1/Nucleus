@@ -49,6 +49,8 @@ public class Relationship implements Comparable<Relationship> {
      *
      * TODO: This algorithm needs to constantly be updated to be more accurate.
      *
+     * TODO: Change to the function Julio designed to come up with likelihood.
+     *
      * @param maxInteractions The highest number of interactions of highest likelihood relationship seen so far.
      *                          Allows for recomputing once all or some relationships have been analyzed.
      * @param maxAverage The largest average interaction length of highest likelihood relationship seen so far.

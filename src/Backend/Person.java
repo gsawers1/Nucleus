@@ -42,7 +42,7 @@ public class Person
         firstName = first;
         lastName = last;
         this.infected = infected;
-        infectionRange = new Range(timeReported- DAYINMILLIS, timeReported + 7*DAYINMILLIS );
+        infectionRange = new Range(timeReported - DAYINMILLIS, timeReported + 7*DAYINMILLIS );
     }
     public int getID(){return ID;}
 

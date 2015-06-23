@@ -45,10 +45,12 @@ public class InteractionsList
                 "L1.Longitude AS LongA, L2.Latitude AS LatB, L2.Longitude AS LongB, \n" +
                 "L1.TimeAndDate AS TimeA, L2.TimeAndDate AS TimeB\n"+
                 "FROM People P1, People P2, Locations L1, Locations L2\n" +
-                "WHERE (LongA - LongB < 1.5 AND LongA - LongB > -1.5)\n" +
-                "AND (LatA - LatB < 1.5 AND LatA - LatB > -1.5)\n" +
+                "WHERE (LongA - LongB < .00002 AND LongA - LongB > .00002)\n" +
+                "AND (LatA - LatB < .00002 AND LatA - LatB > .00002)\n" +
                 "AND L1.Person <> L2.Person\n" +
-                "AND TimeA-TimeB BETWEEN 300000 AND -300000 ;\n";
+                "AND TimeA-TimeB BETWEEN 300000 AND -300000 \n" +
+                "AND L1.Person = P1.ID \n" +
+                "AND L2.Person = P2.ID;";
 
         ResultSet result;
         ArrayList<Interaction> currentSet;

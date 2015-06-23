@@ -35,7 +35,7 @@ public class Location
         if(o == null || !(o instanceof Location)) return false;
 
         Location l = (Location) o;
-        if(longitude == l.getLatitude() && longitude == l.getLongitude())
+        if(latitude == l.getLatitude() && longitude == l.getLongitude())
             return true;
         else
             return false;

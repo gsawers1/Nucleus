@@ -56,7 +56,7 @@ public class PeopleList
             update.consolidateInteractions();
             /**
              * Run build infection chance twice.
-             * First time to get intial comparisons, second time to smooth out any bad outliers.
+             * First time to get initial comparisons, second time to smooth out any bad outliers.
              */
             update.buildRelationshipInfectionChance();
             update.buildRelationshipInfectionChance();

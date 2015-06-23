@@ -12,8 +12,8 @@ CREATE TABLE People(
 
 CREATE TABLE Locations(
 	ID INT,
-	Longitude INT,
-	Latitude INT,
+	Longitude DOUBLE,
+	Latitude DOUBLE,
 	TimeAndDate INT,
 	Person INT,
 	PRIMARY KEY(ID),
