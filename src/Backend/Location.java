@@ -14,6 +14,8 @@ public class Location
 
     private double radius;
 
+    final static double DEFUALT_RADIUS = 0.0; //Need to determine a default radius to surround a persons location
+
     public Location(int ID, int longitude, int latitude, double radius)
     {
         this.ID = ID;

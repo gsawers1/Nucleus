@@ -19,7 +19,7 @@ public class Runner{
     private static PeopleList peopleList = new PeopleList();
     private static DatabaseManager dbms = new DatabaseManager();
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
 
         try{
             dbms.establishConnection();

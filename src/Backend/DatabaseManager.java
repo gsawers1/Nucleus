@@ -1,16 +1,18 @@
 package Backend;
 
 import java.sql.*;
-public class DatabaseManager{
+
+public class DatabaseManager
+{
 
 	Connection conn;
-	public DatabaseManager()
-	{
+
+	public DatabaseManager() {
 
 	}
 
-	public boolean establishConnection(){
-		try{
+	public boolean establishConnection() {
+		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		}
 		catch (ClassNotFoundException ex)
@@ -18,25 +20,26 @@ public class DatabaseManager{
 			System.out.println("Driver not found");
 		}
 
-
-		String url = "jdbc:mysql@csc-db0.csc.calpoly.edu/";
-		String user = "gsawers";
-		String password = "zq873T!o";
+		final String url = "jdbc:mysql@csc-db0.csc.calpoly.edu/";
+		final String user = "gsawers";
+		final String password = "zq873T!o";
 
 		try {
 			conn = DriverManager.getConnection(url+user+"?user="+user+"&password="+password);
+			System.out.println("Connection established");
 		}
-		catch(SQLException ex){
+		catch(SQLException ex) {
 			System.out.println("Could not establish connection");
 			return false;
 		}
-		System.out.println("Connection established");
+
 		return true;
 	}
 
-	public ResultSet sendSelectQuery(String query){
+	public ResultSet sendSelectQuery(String query) {
 		ResultSet result;
 		Statement statement;
+
 		try {
 			 statement = conn.createStatement();
 			 result = statement.executeQuery(query);
