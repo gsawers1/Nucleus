@@ -22,6 +22,8 @@ public class Person
 
     private int maxInteractions = 0;
 
+    private int numTotalIneractions;
+
     private double maxAverage = 0;
 
     private double highestLikelihood = 0;
@@ -48,7 +50,10 @@ public class Person
 
     public void setInteractionSet(TreeSet<Interaction> set){
         personalInteractionSet = set;
+        numTotalIneractions = set.size();
     }
+
+    public int getInteractionSetSize() { return numTotalIneractions; }
 
     public Range getInfectionRange(){return infectionRange;}
 
@@ -83,7 +88,7 @@ public class Person
                             update.addInteraction(current);
                             relationships.put(current.getPersonBID(), update);
                         } else {
-                            relationships.put(current.getPersonBID(), new Relationship(current.getPersonB()));
+                            relationships.put(current.getPersonBID(), new Relationship(current.getPersonB(), getInteractionSetSize()));
                         }
                         current = next;
                     }
