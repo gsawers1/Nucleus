@@ -21,12 +21,10 @@ public class Relationship implements Comparable<Relationship> {
     final private double durationConstant = 100 / 1400;
     final private double radiusConstant = -100 / 42;
     final private double gammaConstant = 0;
-    private int originalInteractionSetSize;
 
     private double infectionLikelihood = 15; //Start at 15, decrease or increase from there.
 
-    public Relationship(Person other, int originalInteractionSetSize) {
-        this.originalInteractionSetSize = originalInteractionSetSize;
+    public Relationship(Person other) {
         otherPerson = other;
     }
 
@@ -201,21 +199,24 @@ public class Relationship implements Comparable<Relationship> {
     private double calcInfectionLiklihood()
     {
         int numInteractions = interactions.size();
-        int numInfected = 0;
         HashMap<Long, Integer> durationModeMap = new HashMap<Long, Integer>();
         HashMap<Long, Integer> radiusModeMap = new HashMap<Long, Integer>();
 
         long maxDuration = 0;
-        long maxRadius = 0;
+        double maxRadius = 0;
 
-        int maxDurationCount = 0;
-        int maxRadiusCount = 0;
+        long totalDuration = 0;
+        double totalRadius = 0;
 
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (Long) interact.getLocation().getRadius();
+            long tempRadius = (long) interact.getPlace().getRadius();
+
+            totalDuration += tempDuration;
+            totalRadius += tempRadius;
 
             if (tempDuration > maxDuration)
+                maxDuration = tempDuration;
             if (tempRadius > maxRadius)
                 maxRadius = tempRadius;
 
@@ -234,54 +235,44 @@ public class Relationship implements Comparable<Relationship> {
 
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (Long) interact.getLocation().getRadius();
+            long tempRadius = (long) interact.getPlace().getRadius();
 
-            if (tempDuration == maxDuration)
-                ++maxDurationCount;
-            if (tempRadius == maxRadius)
-                ++maxRadiusCount;
-
-            sumDuration += tempDuration * durationModeMap.get(tempDuration);
-            sumRadius += tempRadius * radiusModeMap.get(tempRadius);
+            sumDuration += tempDuration * (tempDuration / totalDuration);
+            sumRadius += tempRadius * (tempRadius / totalRadius);
         }
 
 
-        double alpha = (maxDurationCount/ numInteractions) *
+        double alpha = (maxDuration / totalDuration) *
                 (durationModeMap.get(modeDurationCountList.size() - 1) / numInteractions);
-        double beta = (maxRadiusCount / numInteractions) *
+        double beta = (maxRadius / totalRadius) *
                 (radiusModeMap.get(modeRadiusCountList.size() - 1) / numInteractions);
-        double gamma = (double) numInfected / originalInteractionSetSize;
+        double gamma = 0;
 
-        return correctLiklihood(alpha, beta, gamma, sumDuration, sumRadius, numInteractions);
+        return alpha * durationConstant * sumDuration +
+                    beta * (100 + radiusConstant * sumDuration) +
+                        gamma * gammaConstant * numInteractions;
     }
 
-    private double correctLiklihood(double alpha, double beta, double gamma, double sumDuration, double sumRadius, int numInteractions) {
-       double error = 1;
-        double newAlpha = alpha;
-        double newBeta = beta;
-        double newGamma = gamma;
+    private double correctLiklihood(double infectionLikelihood, double alpha, double beta, double gamma) {
+        double actualOutput = 0;
+        double desiredOutput = 0;
+        double error = 1 - Math.abs(actualOutput - desiredOutput) / desiredOutput;
 
-        do {
-            double actualOutput = newAlpha * durationConstant * (sumDuration / numInteractions) +
-                    newBeta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
-                    newGamma * gammaConstant * numInteractions;
-            double desiredOutput = newAlpha * durationConstant * (24 / numInteractions) +
-                    newBeta  * (100 + radiusConstant * (0 / numInteractions)) +
-                    newGamma * gammaConstant * numInteractions;
-            error = 1 - Math.abs(actualOutput - desiredOutput) / desiredOutput;
+        //TODO: update the error appropriately here inside the loop, with actual/desired output
 
-            Double max = new Double(Math.max(newAlpha, Math.max(newBeta , gamma)));
+        while (error > 0) {
+            Double max = new Double(Math.max(alpha, Math.max(beta, gamma)));
 
-            if (max.equals(newAlpha))
-                newAlpha -= newAlpha * error;
-            else if (max.equals(newBeta))
-                newBeta -= newBeta * error;
+            if (max.equals(alpha))
+                alpha -= alpha * error;
+            else if (max.equals(beta))
+                beta -= beta * error;
             else
-                newGamma -= newGamma * error;
-        } while (error > .1);
+                gamma -= gamma * error;
+        }
 
-        return  newAlpha * durationConstant * (sumDuration / numInteractions) +
-                newBeta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
-                newGamma * gammaConstant * numInteractions;
+        return error;
     }
+
+
 }
