@@ -210,7 +210,7 @@ public class Relationship implements Comparable<Relationship> {
 
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (Long) interact.getLocation().getRadius();
+            long tempRadius = (long) interact.getPlace().getRadius();
 
             totalDuration += tempDuration;
             totalRadius += tempRadius;
@@ -235,7 +235,7 @@ public class Relationship implements Comparable<Relationship> {
 
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (Long) interact.getLocation().getRadius();
+            long tempRadius = (long) interact.getPlace().getRadius();
 
             sumDuration += tempDuration * (tempDuration / totalDuration);
             sumRadius += tempRadius * (tempRadius / totalRadius);
@@ -270,6 +270,8 @@ public class Relationship implements Comparable<Relationship> {
             else
                 gamma -= gamma * error;
         }
+
+        return error;
     }
 
 

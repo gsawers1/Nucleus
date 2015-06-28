@@ -30,7 +30,7 @@ public class Location
 
     public int getLatitude(){return latitude;}
 
-    public double radius(){return radius;}
+    public double getRadius(){return radius;}
 
     @Override
     public boolean equals(Object o){
