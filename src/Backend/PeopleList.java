@@ -7,14 +7,18 @@ import java.util.TreeSet;
 
 public class PeopleList
 {
+    /**
+     * Hashtable of People involved in the Nucleus project, mapped from ID to Person.
+     */
     private Hashtable<Integer,Person> people = new Hashtable<Integer, Person>();
 
-    public PeopleList()
-    {
-    }
+    /**
+     * Default constructor for Objects of class PeopleList.
+     */
+    public PeopleList() {}
 
     /**
-     * Populate the list of people
+     * Populate the list of people.
      * @throws SQLException
      */
     public void populateList(DatabaseManager dbms) throws SQLException {
@@ -35,8 +39,17 @@ public class PeopleList
         }
     }
 
+    /**
+     * Accessor method for the Hashtable of People composing this PeopleList.
+     * @return the Hashtable of People
+     */
     public Hashtable<Integer, Person> getPeopleList(){return people;}
 
+    /**
+     * Accessor method for the Person associated with the specified ID.
+     * @param id the ID of th Person to search for
+     * @return the Person associated with the specified ID
+     */
     public Person getPerson(int id){
         return people.get(id);
     }
@@ -54,6 +67,7 @@ public class PeopleList
         else {
             update.setInteractionSet(interactions);
             update.consolidateInteractions();
+
             /**
              * Run build infection chance twice.
              * First time to get initial comparisons, second time to smooth out any bad outliers.

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * "Main" class that makes everything happen
+ * "Main" class that launches the Nucleus application.
  *
  * Pulls information down from the database, then performs the steps necessary to organize this data and
  * analyze it so that we can determine how likely infection was between two people.
@@ -15,10 +15,25 @@ import java.util.*;
  */
 public class Runner{
 
+    /**
+     * The list of all Interactions stored in the database to be compared.
+     */
     private static InteractionsList interactionList = new InteractionsList();
+
+    /**
+     * The list of People involved in the Nucleus project.
+     */
     private static PeopleList peopleList = new PeopleList();
+
+    /**
+     * The DatabaseManager for the database specific to the Nucleus project.
+     */
     private static DatabaseManager dbms = new DatabaseManager();
 
+    /**
+     * Main method to control the application logic.
+     * @param args arguements to the application
+     */
     public static void main(String args[]) {
 
         try{

@@ -15,13 +15,20 @@ import java.util.TreeSet;
  */
 public class InteractionsList
 {
+    /**
+     * A Hashtable to store the list of Interactions associated with a specific Person's ID.
+     */
     private Hashtable<Integer, ArrayList<Interaction>> interactions = new Hashtable<Integer, ArrayList<Interaction>>();
+
+    /**
+     * The list of People involved in the Nucleus project.
+     */
     private PeopleList personList;
 
-    public InteractionsList()
-    {
-
-    }
+    /**
+     * Default constructor for objects in class InteractionsList.
+     */
+    public InteractionsList() {}
 
     /**
      * Performs the steps to create the interactions Hashtable.
@@ -33,14 +40,10 @@ public class InteractionsList
      *
      * While this makes our space constraint higher, the time it saves on searching the Hashtable is potentially worth it.
      *
-     * @param dbms
+     * @param dbms the DatabaseManager corresponding to the database for the Nucleus project
      * @throws SQLException
      */
     public void populateList(DatabaseManager dbms) throws SQLException{
-        /***
-         * Needs to be checked
-         * TODO: Need to modify Database schema so TimeOfDay is an INT type not a TIME type
-         */
         String sql = "SELECT L1.ID, L2.ID, L1.Latitude,\n"+
                 "L1.Longitude, L2.Latitude, L2.Longitude,\n" +
                 "L1.TimeAndDate, L2.TimeAndDate, L1.Person, L2.Person \n" +
@@ -81,9 +84,7 @@ public class InteractionsList
                     new Range((long)result.getInt("L2.TimeAndDate"),(long)result.getInt("L1.TimeAndDate")),
                     false
             );
-            /**
-             * Probably need to change this a bit, like change Location distance to the distance formula.
-             */
+
             currentSet = interactions.get(personIDA);
             if(currentSet == null){
                 currentSet = new ArrayList<Interaction>();
@@ -105,9 +106,9 @@ public class InteractionsList
     }
 
     /**
-     * Retrieves the set of interactions for a specified person.
-     * @param target
-     * @return The Set of interactions that the person is involved in.
+     * Retrieves the set of interactions for a specified Person.
+     * @param target the Person from which to get the set of interactions.
+     * @return The set of interactions that the person is involved in.
      */
     public TreeSet<Interaction> getInteractionByPerson(Person target){
         System.out.println("Creating Set for:" + target.getID());
@@ -122,11 +123,25 @@ public class InteractionsList
         return returnSet;
     }
 
+    /**
+     * Setter method for the list of People.
+     * @param people the list of People to set.
+     */
     public void setPeopleList(PeopleList people){personList = people;}
+
+    /**
+     * Sets the list of People to null.
+     */
     public void clearPeopleList(){personList = null;}
 
-
-
+    /**
+     * Get distance in meters between two pairs of latitude and longitude points.
+     * @param lat1 latitude of the first point
+     * @param lon1 longitude of the first point
+     * @param lat2 latitude of the second point
+     * @param lon2 longitude of the second point
+     * @return the distance in meters between the two pairs of latitude and longitude points
+     */
     private double getDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371; // Radius of the earth in km
         double dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -141,10 +156,20 @@ public class InteractionsList
         return d;
     }
 
+    /**
+     * Convert from degrees to radians.
+     * @param deg the degrees to be converted
+     * @return the radians equivalent to the specified degrees
+     */
     private double deg2rad(double deg) {
         return deg * (Math.PI/180);
     }
 
+    /**
+     * Normalize the data value to be between 0-1 using a special constant.
+     * @param e data value to be normalized
+     * @return the normalized data value
+     */
     private double normalize(double e){
         return e/0.02840;
     }

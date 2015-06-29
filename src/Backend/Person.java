@@ -8,25 +8,56 @@ import java.util.*;
  */
 public class Person
 {
+    /**
+     * The ID associated with this Person.
+     */
     private int ID;
 
+    /**
+     * The first name of this Person.
+     */
     private String firstName;
 
+    /**
+     * The last name of this Person.
+     */
     private String lastName;
 
+    /**
+     * Boolean representing whether or not this Person is infected.
+     */
     private boolean infected;
 
+    /**
+     * The Range of time that this Person is contagious for.
+     */
     private Range infectionRange;
 
-    private final int DAYINMILLIS = 86400000;
-
-    private int maxInteractions = 0;
-
+    /**
+     * The number of Interactions this Person is involved in.
+     */
     private int numTotalIneractions;
 
-    private double maxAverage = 0;
+    /**
+     * Constant specifying the conversion of a day to milliseconds.
+     */
+    private final int DAYINMILLIS = 86400000;
 
-    private double highestLikelihood = 0;
+    /**
+     * Constructor for Objects of class Person.
+     * @param ID the ID associated with this Person
+     * @param first the first name of this Person
+     * @param last the last name of this Person
+     * @param infected boolean representing whether or not this Person is infected
+     * @param timeReported the Range of time that this Person is contagious for
+     */
+    public Person(int ID, String first, String last, boolean infected, long timeReported){
+        this.ID = ID;
+        firstName = first;
+        lastName = last;
+        this.infected = infected;
+        infectionRange = new Range(timeReported - DAYINMILLIS, timeReported + 7*DAYINMILLIS );
+    }
 
     /**
      * Contains all the relationships a person has. This is a more complete picture of a persons interactions with one
@@ -39,26 +70,49 @@ public class Person
      */
     private TreeSet<Interaction> personalInteractionSet = new TreeSet<Interaction>();
 
-    public Person(int ID, String first, String last, boolean infected, long timeReported){
-        this.ID = ID;
-        firstName = first;
-        lastName = last;
-        this.infected = infected;
-        infectionRange = new Range(timeReported - DAYINMILLIS, timeReported + 7*DAYINMILLIS );
-    }
+    /**
+     * Accessor method for the ID associated with this Person.
+     * @return the ID associated with this Person
+     */
     public int getID(){return ID;}
 
+    /**
+     * Setter method for the set of Interactions this Person is involved in.
+     * @param set the set of Interactions this Person is involved in
+     */
     public void setInteractionSet(TreeSet<Interaction> set){
         personalInteractionSet = set;
         numTotalIneractions = set.size();
     }
 
-    public int getInteractionSetSize() { return numTotalIneractions; }
+    /**
+     * Accessor method for the number of Interactions this Person is involved in.
+     * @return the number of Interactions this Person is involved in
+     */
+    public int getInteractionSetSize() {return numTotalIneractions;}
 
+    /**
+     * Accessor method for the Range of time this Person is contagious for.
+     * @return the Range of time this Person is contagious for
+     */
     public Range getInfectionRange(){return infectionRange;}
 
+    /**
+     * Accessor method for the set of Interactions this Person is involved in.
+     * @return the set of Interactions this Person is involved in
+     */
     public TreeSet<Interaction> getInteractionSet(){return personalInteractionSet;}
+
+    /**
+     * Accessor method for the first name of this Person.
+     * @return the first name of this Person
+     */
     public String getFirstName(){return firstName;}
+
+    /**
+     * Accessor method for the last name of this Person.
+     * @return the last name of this Person
+     */
     public String getLastName(){return lastName;}
 
     /**
@@ -110,6 +164,9 @@ public class Person
         }
     }
 
+    /**
+     * Debugging tool to print out the Relationships this Person is involved in.
+     */
     public void printRelationships(){
         System.out.println("Infection chances for: "+ firstName + " " + lastName);
         if(relationships.size() == 0){

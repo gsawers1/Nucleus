@@ -5,41 +5,93 @@ import java.util.*;
 /**
  * A class meant to represent a relationship a person has with another person.
  * This more accurately reflects how likely it is that a person infected another person,
- * as one single interaction is likely not enough information to determine if an infection occured.
+ * as one single interaction is likely not enough information to determine if an infection occurred.
  */
 public class Relationship implements Comparable<Relationship> {
 
     /**
-     * TreeSet of Interactions
+     * The set of Interactions that define this Relationship.
      */
     private TreeSet<Interaction> interactions = new TreeSet<Interaction>();
 
+    /**
+     * The second Person involved in this Relationship.
+     */
     private Person otherPerson;
 
+    /**
+     * The total number of times the two Persons interacted with a possibility of infection.
+     */
     private int timesInteracted;
+
+    /**
+     * The average distance of Interaction.
+     */
     private double averageInteractionLengthDistance = 0;
+
+    /**
+     * Constant for duration used in the likelihood formula.
+     */
     final private double durationConstant = 100 / 1400;
+
+    /**
+     * Constant for distance used in the likelihood formula.
+     */
     final private double radiusConstant = 100 / 49;
+
+    /**
+     * Constant for infection number used in the likelihood formula.
+     */
     final private double gammaConstant = 0;
+
+    /**
+     * The total number of Interactions that the first Person in this Relationship had with anyone.
+     */
     int originalInteractionSetSize;
 
+    /**
+     * Initial value for the infection likelihood.
+     */
     private double infectionLikelihood = 15; //Start at 15, decrease or increase from there.
 
+    /**
+     * Constructor for Objects of class Relationship.
+     * @param other the second Person involved in this Relationship.
+     * @param originalInteractionSetSize the total number of Interactions that the first Person in this Relationship had with anyone.
+     */
     public Relationship(Person other, int originalInteractionSetSize ) {
         this.originalInteractionSetSize = originalInteractionSetSize;
         otherPerson = other;
     }
 
+    /**
+     * Add the specified Interaction to this Relationship.
+     * @param next the Interaction to be added
+     */
     public void addInteraction(Interaction next) {
         interactions.add(next);
     }
 
+    /**
+     * Accessor method for the computed infection likelihood.
+     * @return the computed infection likelihood
+     */
     public double getInfectionLikelihood() {
         return infectionLikelihood;
     }
 
+    /**
+     * Accessor method for the second Person in this Relationship.
+     * @return the second Person in this Relationship
+     */
     public Person getOtherPerson(){return otherPerson;}
 
+    /**
+     * Compares this Relationship to the specified Relationship based on infection likelihood.
+     * @param other the other Relationship to compare
+     * @return a negative value if this Relationship is considered less than the specified,
+     * positive if the specified is considered less than this
+     */
     @Override
     public int compareTo(Relationship other) {
         if (infectionLikelihood > other.getInfectionLikelihood())
@@ -55,10 +107,6 @@ public class Relationship implements Comparable<Relationship> {
      * Goal is to convert this algorithm into a learning algorithm using neural networks.
      * If algorithm can "learn" what factors contribute to higher infection rates, it will become more accurate.
      * <p/>
-     * TODO: This algorithm needs to constantly be updated to be more accurate.
-     * <p/>
-     * TODO: Change to the function Julio designed to come up with likelihood.
-     *
      * @param maxInteractions The highest number of interactions of highest likelihood relationship seen so far.
      *                        Allows for recomputing once all or some relationships have been analyzed.
      * @param maxAverage      The largest average interaction length of highest likelihood relationship seen so far.
@@ -81,15 +129,18 @@ public class Relationship implements Comparable<Relationship> {
          * If someone works with someone else who is sick, they may get 2 interactions each day just on the nature
          *  of how these interactions are computed. These values will need to be tweaked, as I believe prolonged
          *  exposure is a better indicator than being close to someone multiple times, but it is a start.
-         *
-         *  Max first relationship score is 93.75.
          */
         infectionLikelihood = averageInteractionLengthDistance + timesInteracted * durationConstant ;
 
     }
 
     /**
+     * Calculates the infection likelihood of this relationship.
      * YEAH! MATH BITCH!
+     *
+     * The attempts to get the mathematical model behind this method to produce valid
+     * results have failed, but have contributed to an alternate version of computing
+     * the likelihood.
      */
     public void calcInfectionLiklihood()
     {
@@ -135,11 +186,12 @@ public class Relationship implements Comparable<Relationship> {
         Collections.sort(modeDurationCountList);
         Collections.sort(modeRadiusCountList);
 
-        //
+        //Averages for duration/radius based on appearance of each interaction value
         double sumDuration = 0;
         double sumRadius = 0;
 
-        //Run through the interactions a second time to
+        //Run through the interactions a second time to count the occurrences of
+        //the max values for duration/radius and compute the averages
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
             long tempRadius = (long) interact.getPlace().getRadius();
@@ -156,6 +208,7 @@ public class Relationship implements Comparable<Relationship> {
         System.out.println("Max Duration Count: "+ numInteractions);
 
 
+        //Regression coefficients for the likelihood formula
         double alpha = (maxDurationCount / numInteractions) *
                 (modeDurationCountList.get(modeDurationCountList.size() - 1) / (double) numInteractions);
         double beta = (maxRadiusCount / numInteractions) *
@@ -164,12 +217,15 @@ public class Relationship implements Comparable<Relationship> {
 
         System.out.println("Alpha: " + alpha + ", Beta: " + beta + ", Gamma:" + gamma);
 
-
+        //Infection likelihood formula
         infectionLikelihood =  alpha * durationConstant * (sumDuration / numInteractions) +
                 beta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
                 gamma * numInteractions;
     }
 
+    /**
+     * Corrects the infection likelihood percentage based on an actual and desired output.
+     */
     private double correctLiklihood(double alpha, double beta, double gamma, double sumDuration, double sumRadius, int numInteractions) {
         double error;
         double newAlpha = alpha;
@@ -196,11 +252,6 @@ public class Relationship implements Comparable<Relationship> {
                 newGamma -= newGamma * error;
         } while (error > .1);
 
-        gamma -= gamma * error;
-
-
         return  actualOutput;
     }
-
-
 }

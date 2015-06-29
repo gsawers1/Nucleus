@@ -5,13 +5,20 @@ import java.util.Properties;
 
 public class DatabaseManager
 {
-
+	/**
+	 * The Connection to the specific database for the Nucleus project.
+	 */
 	Connection conn = null;
 
-	public DatabaseManager() {
+    /**
+     * Default constructor for Objects of class DatabaseManager.
+     */
+	public DatabaseManager() {}
 
-	}
-
+    /**
+     * Establishes a connection with the database.
+     * @return true if the connection was successful, false for a failure
+     */
 	public boolean establishConnection() {
 
 		Properties connectionProps = new Properties();
@@ -40,6 +47,11 @@ public class DatabaseManager
 		return true;
 	}
 
+    /**
+     * Sends a Select Query to the database.
+     * @param query the Query to be sent
+     * @return the ResultSet from this Query
+     */
 	public ResultSet sendSelectQuery(String query) {
 		ResultSet result;
 		Statement statement;
@@ -57,6 +69,10 @@ public class DatabaseManager
 		return result;
 	}
 
+    /**
+     * Populate the tables of the database according the specified Query.
+     * @param query the query to populate the tables
+     */
 	public void populateTables(String query){
 		try {
 			PreparedStatement statement = conn.prepareStatement(query);
