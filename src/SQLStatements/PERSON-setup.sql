@@ -5,9 +5,9 @@ CREATE TABLE People(
 	ID INT,
 	FirstName VARCHAR(30),
 	LastName VARCHAR(30),
-	INT Infected,
-	INT TimeReported,
-	PRIMARY KEY(No) 
+	Infected INT,
+	TimeReported INT,
+	PRIMARY KEY(ID) 
 );
 
 CREATE TABLE Locations(

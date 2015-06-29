@@ -28,7 +28,8 @@ public class Runner{
             interactionList.populateList(dbms);
         }
         catch(SQLException ex){
-            System.out.println("SQL Exception occurred when populating list: " + ex.getErrorCode());
+            System.out.println("SQL Exception occurred when populating list: " );
+            ex.printStackTrace();
         }
 
         Hashtable<Integer, Person> initialList = peopleList.getPeopleList();

@@ -58,6 +58,8 @@ public class Person
     public Range getInfectionRange(){return infectionRange;}
 
     public TreeSet<Interaction> getInteractionSet(){return personalInteractionSet;}
+    public String getFirstName(){return firstName;}
+    public String getLastName(){return lastName;}
 
     /**
      * Goal of this method is to remove Interactions that would not infect a person
@@ -109,6 +111,19 @@ public class Person
             maxInteractions = (int)(double) maxValues.get(0);
             maxAverage = maxValues.get(1);
             highestLikelihood = maxValues.get(2);
+        }
+        printRelationships();
+    }
+
+    public void printRelationships(){
+        for(Map.Entry<Integer,Relationship> entry : relationships.entrySet()) {
+            int key = entry.getKey();
+            Relationship next = entry.getValue();
+
+            Person other = next.getOtherPerson();
+            double infectionlikelihood = next.getInfectionLikelihood();
+            System.out.println("Infection Likelihood between " + firstName + " " + lastName + " and " + other.getFirstName()+
+                    " " + other.getLastName() + " is: " + next.getInfectionLikelihood());
         }
     }
 }

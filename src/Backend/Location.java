@@ -8,15 +8,15 @@ public class Location
 {
     private int ID;
 
-    private int longitude;
+    private double longitude;
 
-    private int latitude;
+    private double latitude;
 
     private double radius;
 
     final static double DEFUALT_RADIUS = 0.0; //Need to determine a default radius to surround a persons location
 
-    public Location(int ID, int longitude, int latitude, double radius)
+    public Location(int ID, double longitude, double latitude, double radius)
     {
         this.ID = ID;
         this.longitude = longitude;
@@ -26,9 +26,9 @@ public class Location
 
     public int getID(){return ID;}
 
-    public int getLongitude(){return longitude;}
+    public double getLongitude(){return longitude;}
 
-    public int getLatitude(){return latitude;}
+    public double getLatitude(){return latitude;}
 
     public double getRadius(){return radius;}
 

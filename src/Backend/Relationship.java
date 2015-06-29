@@ -38,6 +38,8 @@ public class Relationship implements Comparable<Relationship> {
         return infectionLikelihood;
     }
 
+    public Person getOtherPerson(){return otherPerson;}
+
     @Override
     public int compareTo(Relationship other) {
         if (infectionLikelihood > other.getInfectionLikelihood())

@@ -20,7 +20,7 @@ public class GenerateInserts{
 		final long millisecondsPerDay = 86400000;
 		final long millisecondsPerHour = 3600000;
 		final long millisecondsPer5Minutes = 300000;
-		String insertFormat = "INESERT INTO Locations \n VALUES (";
+		String insertFormat = "INSERT INTO Locations \n VALUES (";
 		int id = 1;
 		int person = 1;
 

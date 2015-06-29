@@ -41,16 +41,14 @@ public class InteractionsList
          * Needs to be checked
          * TODO: Need to modify Database schema so TimeOfDay is an INT type not a TIME type
          */
-        String sql = "SELECT P1.ID AS IDA, P2.ID AS IDB, L1.ID AS LIDA, L1.Latitude AS LatA,\n" +
-                "L1.Longitude AS LongA, L2.Latitude AS LatB, L2.Longitude AS LongB, \n" +
-                "L1.TimeAndDate AS TimeA, L2.TimeAndDate AS TimeB\n"+
-                "FROM People P1, People P2, Locations L1, Locations L2\n" +
-                "WHERE (LongA - LongB < .00002 AND LongA - LongB > .00002)\n" +
-                "AND (LatA - LatB < .00002 AND LatA - LatB > .00002)\n" +
-                "AND L1.Person <> L2.Person\n" +
-                "AND TimeA-TimeB BETWEEN 300000 AND -300000 \n" +
-                "AND L1.Person = P1.ID \n" +
-                "AND L2.Person = P2.ID;";
+        String sql = "SELECT L1.ID, L2.ID, L1.Latitude,\n"+
+                "L1.Longitude, L2.Latitude, L2.Longitude,\n" +
+                "L1.TimeAndDate, L2.TimeAndDate, L1.Person, L2.Person \n" +
+                "FROM Locations L1, Locations L2\n" +
+                "WHERE (L1.Longitude - L2.Longitude < .00002 AND L1.Longitude - L2.Longitude > -.00002)\n" +
+                "AND (L1.Latitude - L2.Latitude < .00002 AND L1.Latitude - L2.Latitude > -.00002)\n"+
+                "AND L1.Person <> L2.Person\n"+
+                "AND (L1.TimeAndDate - L2.TimeAndDate < 360000 AND  L1.TimeAndDate - L2.TimeAndDate > -360000);\n";
 
         ResultSet result;
         ArrayList<Interaction> currentSet;
@@ -59,26 +57,49 @@ public class InteractionsList
         boolean areentrys = result.next();
         int i = 0;
         while(areentrys){
-            int personID = result.getInt("IDA");
-            Interaction next = new Interaction(i++,
-                    personList.getPerson(result.getInt("IDA")),
-                    personList.getPerson(result.getInt("IDB")),
-                    new Location(result.getInt("LIDA"), result.getInt("LongA"), result.getInt("LatA"),
-                            (double) Math.max(result.getInt("LatA") - result.getInt("LatB"),
-                                    result.getInt("LongA") - result.getInt("LongB"))),
-                    new Range((long)result.getInt("TimeA"),(long)result.getInt("TimeB")),
+            int personIDA= result.getInt("L1.Person");
+            int personIDB = result.getInt("L2.Person");
+            //System.out.println("Current Person" + personIDA);
+            Interaction nextA = new Interaction(i++,
+                    personList.getPerson(personIDA),
+                    personList.getPerson(personIDB),
+                    new Location(result.getInt("L1.ID"), result.getDouble("L1.Longitude"), result.getDouble("L1.Latitude"),
+                            Math.max(result.getDouble("L1.Latitude") - result.getDouble("L2.Latitude"),
+                                    result.getDouble("L1.Longitude") - result.getDouble("L2.Longitude"))),
+                    new Range((long)result.getInt("L1.TimeAndDate"),(long)result.getInt("L2.TimeAndDate")),
                     false
                     );
+
+            Interaction nextB = new Interaction(i++,
+                    personList.getPerson(personIDB),
+                    personList.getPerson(personIDA),
+                    new Location(result.getInt("L2.ID"), result.getDouble("L2.Longitude"), result.getDouble("L2.Latitude"),
+                            Math.max(result.getDouble("L2.Latitude") - result.getDouble("L1.Latitude"),
+                                    result.getDouble("L2.Longitude") - result.getDouble("L1.Longitude"))),
+                    new Range((long)result.getInt("L2.TimeAndDate"),(long)result.getInt("L1.TimeAndDate")),
+                    false
+            );
             /**
              * Probably need to change this a bit, like change Location distance to the distance formula.
              */
+            currentSet = interactions.get(personIDA);
+            if(currentSet == null){
+                currentSet = new ArrayList<Interaction>();
+            }
+            currentSet.add(nextA);
+            interactions.put(personIDA, currentSet);
 
-            currentSet = interactions.get(personID);
-            currentSet.add(next);
-            interactions.put(personID, currentSet);
+            currentSet = interactions.get(personIDB);
+            if(currentSet == null){
+                currentSet = new ArrayList<Interaction>();
+            }
+            currentSet.add(nextB);
+            interactions.put(personIDB, currentSet);
+
             areentrys = result.next();
 
         }
+        System.out.println(interactions.size());
     }
 
     /**
@@ -87,6 +108,7 @@ public class InteractionsList
      * @return The Set of interactions that the person is involved in.
      */
     public TreeSet<Interaction> getInteractionByPerson(Person target){
+        System.out.println("Creating Set for:" + target.getID());
         TreeSet<Interaction> returnSet = new TreeSet<Interaction>();
         ArrayList<Interaction> targetSet;
         int id = target.getID();
