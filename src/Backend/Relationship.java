@@ -145,92 +145,55 @@ public class Relationship implements Comparable<Relationship> {
         return maxValues;
     }
 
-    /*private int findModeDurationCount() {
-        HashMap<Long, Integer> modeMap = new HashMap<Long, Integer>();
-
-        for (Interaction interact : interactions) {
-            long tempDuration = interact.getTimePeriod().getDuration();
-            modeMap.put(tempDuration, modeMap.get(tempDuration) + 1);
-        }
-
-        ArrayList<Integer> modeList = new ArrayList<Integer>(modeMap.values());
-        Collections.sort(modeList);
-
-        return modeList.get(modeList.size() - 1);
-    }
-
-    private long findMaxDuration() {
-        long maxDuration = 0;
-
-        for (Interaction interact : interactions) {
-            if (interact.getTimePeriod().getDuration() > maxDuration)
-                maxDuration = interact.getTimePeriod().getDuration();
-        }
-
-        return maxDuration;
-    }
-
-    private double findMaxRadius()
-    {
-        double maxRadius = 0;
-
-        for (Interaction interact : interactions) {
-            if (interact.getLocation().getRadius() > maxRadius)
-                maxRadius = interact.getLocation().getRadius();
-        }
-
-        return maxRadius;
-    }
-
-    private int findModeRadiusCount()
-    {
-        HashMap<Integer, Integer> modeMap = new HashMap<Integer, Integer>();
-
-        for (Interaction interact : interactions) {
-            long tempRadius = (Long) interact.getLocation().getRadius();
-            modeMap.put(tempRadius, modeMap.get(tempRadius) + 1);
-        }
-
-        ArrayList<Integer> modeList = new ArrayList<Integer>(modeMap.values());
-        Collections.sort(modeList);
-
-        return modeList.get(modeList.size() - 1);
-    }*/
-
     private double calcInfectionLiklihood()
     {
         int numInteractions = interactions.size();
-        int numInfected = 0;
+
+        //Maps to track the mode duration and mode radius
         HashMap<Long, Integer> durationModeMap = new HashMap<Long, Integer>();
         HashMap<Long, Integer> radiusModeMap = new HashMap<Long, Integer>();
 
         long maxDuration = 0;
         long maxRadius = 0;
 
+        //Count of the appearances of the max duration and radius in the interactions
         int maxDurationCount = 0;
         int maxRadiusCount = 0;
 
+        //Run through the interactions once to find the mode and max values
+        //of the duration and radius. The radius is being truncated to a
+        //long for ease of comparison
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
             long tempRadius = (long) interact.getPlace().getRadius();
 
             if (tempDuration > maxDuration)
-                if (tempRadius > maxRadius)
-                    maxRadius = tempRadius;
+                maxDuration = tempDuration;
+            if (tempRadius > maxRadius)
+                maxRadius = tempRadius;
 
-
-            durationModeMap.put(tempDuration, durationModeMap.get(tempDuration) + 1);
-            radiusModeMap.put(tempRadius, radiusModeMap.get(tempRadius) + 1);
+            //Add a count to the current interaction's duration/radius
+            try {
+                durationModeMap.put(tempDuration, durationModeMap.get(tempDuration) + 1);
+                radiusModeMap.put(tempRadius, radiusModeMap.get(tempRadius) + 1);
+            }
+            catch (NullPointerException except) {
+                durationModeMap.put(tempDuration, 0);
+                radiusModeMap.put(tempRadius, 0);
+            }
         }
 
+        //Extract the actual mode values and sort them to find the highest
         ArrayList<Integer> modeDurationCountList = new ArrayList<Integer>(durationModeMap.values());
         ArrayList<Integer> modeRadiusCountList = new ArrayList<Integer>(radiusModeMap.values());
         Collections.sort(modeDurationCountList);
         Collections.sort(modeRadiusCountList);
 
+        //
         double sumDuration = 0;
         double sumRadius = 0;
 
+        //Run through the interactions a second time to
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
             long tempRadius = (long) interact.getPlace().getRadius();
@@ -249,13 +212,13 @@ public class Relationship implements Comparable<Relationship> {
                 (durationModeMap.get(modeDurationCountList.size() - 1) / numInteractions);
         double beta = (maxRadiusCount / numInteractions) *
                 (radiusModeMap.get(modeRadiusCountList.size() - 1) / numInteractions);
-        double gamma = (double) numInfected / originalInteractionSetSize;
+        double gamma = (double) numInteractions / originalInteractionSetSize;
 
         return correctLiklihood(alpha, beta, gamma, sumDuration, sumRadius, numInteractions);
     }
 
     private double correctLiklihood(double alpha, double beta, double gamma, double sumDuration, double sumRadius, int numInteractions) {
-        double error = 1;
+        double error;
         double newAlpha = alpha;
         double newBeta = beta;
         double newGamma = gamma;
