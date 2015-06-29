@@ -103,15 +103,6 @@ public class Relationship implements Comparable<Relationship> {
     /**
      * Algorithm to compute the likelihood that this relationship caused the infection
      * For now will simply be hard values based on research to indicate the infection likelihood.
-     * <p/>
-     * Goal is to convert this algorithm into a learning algorithm using neural networks.
-     * If algorithm can "learn" what factors contribute to higher infection rates, it will become more accurate.
-     * <p/>
-     * @param maxInteractions The highest number of interactions of highest likelihood relationship seen so far.
-     *                        Allows for recomputing once all or some relationships have been analyzed.
-     * @param maxAverage      The largest average interaction length of highest likelihood relationship seen so far.
-     *                        Allows for recomputing once all or some relationships have been analyzed.
-     * @return
      */
     public void computeInfectionLikeliHood() {
         timesInteracted = interactions.size();
@@ -131,7 +122,6 @@ public class Relationship implements Comparable<Relationship> {
          *  exposure is a better indicator than being close to someone multiple times, but it is a start.
          */
         infectionLikelihood = averageInteractionLengthDistance + timesInteracted * durationConstant ;
-
     }
 
     /**

@@ -29,19 +29,19 @@ public class Range
 
     /**
      * Accessor method for the lower bound of this Range.
-     * @return
+     * @return the lower bound of this Range.
      */
     public long getLowerBound(){return lowerBound;}
 
     /**
      * Accessor method for the upper bound of this Range.
-     * @return
+     * @return the upper bound of this Range
      */
     public long getUpperBound(){return upperBound;}
 
     /**
      * Accessor method for the duration of time defined by this Range.
-     * @return
+     * @return the duration of time defined by this Range
      */
     public long getDuration(){ return upperBound - lowerBound;}
 }
