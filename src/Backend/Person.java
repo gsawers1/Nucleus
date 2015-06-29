@@ -89,7 +89,7 @@ public class Person
                             Relationship update = relationships.get(current.getPersonBID());
                             update.addInteraction(current);
                             relationships.put(current.getPersonBID(), update);
-                        } else {
+                        } else if(current.getPersonB().getInfectionRange().getLowerBound() < infectionRange.getLowerBound()) {
                             relationships.put(current.getPersonBID(), new Relationship(current.getPersonB(), getInteractionSetSize()));
                         }
                         current = next;
@@ -116,13 +116,16 @@ public class Person
     }
 
     public void printRelationships(){
+        System.out.println("Infection chances for: "+ firstName + " " + lastName);
+        if(relationships.size() == 0){
+            System.out.println("No relationships found that could have caused infection.");
+        }
         for(Map.Entry<Integer,Relationship> entry : relationships.entrySet()) {
             int key = entry.getKey();
             Relationship next = entry.getValue();
-
             Person other = next.getOtherPerson();
             double infectionlikelihood = next.getInfectionLikelihood();
-            System.out.println("Infection Likelihood between " + firstName + " " + lastName + " and " + other.getFirstName()+
+            System.out.println("Infection Likelihood from " + other.getFirstName()+
                     " " + other.getLastName() + " is: " + next.getInfectionLikelihood());
         }
     }

@@ -59,7 +59,6 @@ public class PeopleList
              * First time to get initial comparisons, second time to smooth out any bad outliers.
              */
             update.buildRelationshipInfectionChance();
-            update.buildRelationshipInfectionChance();
             people.put(update.getID(), update);
         }
     }
