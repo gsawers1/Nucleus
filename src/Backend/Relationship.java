@@ -17,9 +17,9 @@ public class Relationship implements Comparable<Relationship> {
     private Person otherPerson;
 
     private int timesInteracted;
-    private double averageInteractionLength = 0;
+    private double averageInteractionLengthDistance = 0;
     final private double durationConstant = 100 / 1400;
-    final private double radiusConstant = -100 / 42;
+    final private double radiusConstant = 100 / 49;
     final private double gammaConstant = 0;
     int originalInteractionSetSize;
 
@@ -65,13 +65,13 @@ public class Relationship implements Comparable<Relationship> {
      *                        Allows for recomputing once all or some relationships have been analyzed.
      * @return
      */
-    public ArrayList<Double> computeInfectionLikeliHood(int maxInteractions, double maxAverage, double highestLikelihood) {
+    public void computeInfectionLikeliHood() {
         timesInteracted = interactions.size();
 
         for (Interaction i : interactions) {
-            averageInteractionLength += i.getTimePeriod().getDuration();
+            averageInteractionLengthDistance += i.getTimePeriod().getDuration() * (radiusConstant*(1-i.getPlace().getRadius()));
         }
-        averageInteractionLength = (averageInteractionLength / timesInteracted) / 60000.0; //Gives us average interaction length in minutes
+        averageInteractionLengthDistance = (averageInteractionLengthDistance / timesInteracted) / 60000.0; //Gives us average interaction length in minutes
 
         /**
          * If this is the first interaction seen, make a baseline to compare other relationships against.
@@ -84,70 +84,14 @@ public class Relationship implements Comparable<Relationship> {
          *
          *  Max first relationship score is 93.75.
          */
-        if (maxInteractions == 0) { //First interaction seen
-            if (averageInteractionLength > 30) //Interacting with this person for extended periods of time
-                infectionLikelihood *= 1.5;
-            else if (averageInteractionLength > 60)
-                infectionLikelihood *= 2;
-            else if (averageInteractionLength > 90)
-                infectionLikelihood *= 2.5;
+        infectionLikelihood = averageInteractionLengthDistance + timesInteracted * durationConstant ;
 
-            if (timesInteracted > 4 && timesInteracted < 10)
-                infectionLikelihood *= 1.5;
-            else if (timesInteracted > 10 && timesInteracted < 15)
-                infectionLikelihood *= 2;
-            else if (timesInteracted > 15)
-                infectionLikelihood *= 2.5;
-        }
-
-        /**
-         * Otherwise calculate values based the best we have so far. Compare the difference in values of number of interactions
-         *  and average interaction length to get a relative infection rate. WHICH IS WHAT WE WANT.
-         *
-         *  As I said above, I think interaction length is more important than interaction times. So I built the computation as follows:
-         *      1. Increment by an amount relative to what criteria this relationship beats,
-         *              this will give it a slight edge to start.
-         *          NOTE: This naturally gives a slight curve, putting higher likelihoods together and spreading out the bottom.
-         *              This should result in a few outliers rising to the top.
-         *      2. Add/Subtract half the difference between average interaction list.
-         *      3. Add/Subtract a third of the difference between number of interactions.
-         *
-         *  Again this needs to be tweaked, but will at the least give us a ranking of relationships.
-         *
-         *  If we can change the algorithm to consider all other relationships (or at least the top 4-5)
-         *      this would be ideal. However this is something for a more complex computing system (*cough* neural networks *cough*)
-         */
-        else {
-            if (averageInteractionLength > maxAverage) {
-                if (timesInteracted > maxInteractions) {
-                    infectionLikelihood = (highestLikelihood + (100 - highestLikelihood) * 0.25)
-                            + (averageInteractionLength - maxAverage) / 2
-                            + (timesInteracted - maxInteractions) / 3;
-
-                } else
-                    infectionLikelihood = (highestLikelihood + (100 - highestLikelihood) * 0.125)
-                            + (averageInteractionLength - maxAverage) / 2
-                            - (timesInteracted - maxInteractions) / 3;
-            } else {
-                if (timesInteracted > maxInteractions) {
-                    infectionLikelihood = (highestLikelihood + (100 - highestLikelihood) * 0.05)
-                            - (averageInteractionLength - maxAverage) / 2
-                            + (timesInteracted - maxInteractions) / 3;
-                } else
-                    infectionLikelihood = (highestLikelihood - (100 - highestLikelihood) * 0.25)
-                            - (averageInteractionLength - maxAverage) / 2
-                            - (timesInteracted - maxInteractions) / 3;
-            }
-        }
-
-        ArrayList<Double> maxValues = new ArrayList<Double>();
-        maxValues.add((double) Math.max(maxInteractions, timesInteracted));
-        maxValues.add(Math.max(averageInteractionLength, maxAverage));
-        maxValues.add(Math.max(infectionLikelihood, highestLikelihood));
-        return maxValues;
     }
 
-    private double calcInfectionLiklihood()
+    /**
+     * YEAH! MATH BITCH!
+     */
+    public void calcInfectionLiklihood()
     {
         int numInteractions = interactions.size();
 
@@ -159,8 +103,8 @@ public class Relationship implements Comparable<Relationship> {
         long maxRadius = 0;
 
         //Count of the appearances of the max duration and radius in the interactions
-        int maxDurationCount = 0;
-        int maxRadiusCount = 0;
+        int maxDurationCount = 1;
+        int maxRadiusCount = 1;
 
         //Run through the interactions once to find the mode and max values
         //of the duration and radius. The radius is being truncated to a
@@ -171,7 +115,7 @@ public class Relationship implements Comparable<Relationship> {
 
             if (tempDuration > maxDuration)
                 maxDuration = tempDuration;
-            if (tempRadius > maxRadius)
+            if (tempRadius < maxRadius)
                 maxRadius = tempRadius;
 
             //Add a count to the current interaction's duration/radius
@@ -180,8 +124,8 @@ public class Relationship implements Comparable<Relationship> {
                 radiusModeMap.put(tempRadius, radiusModeMap.get(tempRadius) + 1);
             }
             catch (NullPointerException except) {
-                durationModeMap.put(tempDuration, 0);
-                radiusModeMap.put(tempRadius, 0);
+                durationModeMap.put(tempDuration, 1);
+                radiusModeMap.put(tempRadius, 1);
             }
         }
 
@@ -209,14 +153,21 @@ public class Relationship implements Comparable<Relationship> {
             sumRadius += tempRadius * radiusModeMap.get(tempRadius);
         }
 
+        System.out.println("Max Duration Count: "+ numInteractions);
 
-        double alpha = (maxDurationCount/ numInteractions) *
-                (durationModeMap.get(modeDurationCountList.size() - 1) / numInteractions);
+
+        double alpha = (maxDurationCount / numInteractions) *
+                (modeDurationCountList.get(modeDurationCountList.size() - 1) / (double) numInteractions);
         double beta = (maxRadiusCount / numInteractions) *
-                (radiusModeMap.get(modeRadiusCountList.size() - 1) / numInteractions);
+                (modeRadiusCountList.get(modeRadiusCountList.size() - 1) / (double) numInteractions);
         double gamma = (double) numInteractions / originalInteractionSetSize;
 
-        return correctLiklihood(alpha, beta, gamma, sumDuration, sumRadius, numInteractions);
+        System.out.println("Alpha: " + alpha + ", Beta: " + beta + ", Gamma:" + gamma);
+
+
+        infectionLikelihood =  alpha * durationConstant * (sumDuration / numInteractions) +
+                beta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
+                gamma * numInteractions;
     }
 
     private double correctLiklihood(double alpha, double beta, double gamma, double sumDuration, double sumRadius, int numInteractions) {
@@ -224,9 +175,10 @@ public class Relationship implements Comparable<Relationship> {
         double newAlpha = alpha;
         double newBeta = beta;
         double newGamma = gamma;
+        double actualOutput;
 
         do {
-            double actualOutput = newAlpha * durationConstant * (sumDuration / numInteractions) +
+            actualOutput = newAlpha * durationConstant * (sumDuration / numInteractions) +
                     newBeta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
                     newGamma * gammaConstant * numInteractions;
             double desiredOutput = newAlpha * durationConstant * (24 / numInteractions) +
@@ -243,11 +195,11 @@ public class Relationship implements Comparable<Relationship> {
             else
                 newGamma -= newGamma * error;
         } while (error > .1);
+
         gamma -= gamma * error;
 
-        return  newAlpha * durationConstant * (sumDuration / numInteractions) +
-                newBeta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
-                newGamma * gammaConstant * numInteractions;
+
+        return  actualOutput;
     }
 
 

@@ -64,18 +64,20 @@ public class InteractionsList
                     personList.getPerson(personIDA),
                     personList.getPerson(personIDB),
                     new Location(result.getInt("L1.ID"), result.getDouble("L1.Longitude"), result.getDouble("L1.Latitude"),
-                            Math.max(result.getDouble("L1.Latitude") - result.getDouble("L2.Latitude"),
-                                    result.getDouble("L1.Longitude") - result.getDouble("L2.Longitude"))),
+                            getDistanceFromLatLonInKm(result.getDouble("L1.Latitude"), result.getDouble("L1.Longitude"),
+                                    result.getDouble("L2.Latitude"), result.getDouble("L2.Longitude"))
+                    ),
                     new Range((long)result.getInt("L1.TimeAndDate"),(long)result.getInt("L2.TimeAndDate")),
                     false
                     );
 
-            Interaction nextB = new Interaction(i++,
+                    Interaction nextB = new Interaction(i++,
                     personList.getPerson(personIDB),
                     personList.getPerson(personIDA),
-                    new Location(result.getInt("L2.ID"), result.getDouble("L2.Longitude"), result.getDouble("L2.Latitude"),
-                            Math.max(result.getDouble("L2.Latitude") - result.getDouble("L1.Latitude"),
-                                    result.getDouble("L2.Longitude") - result.getDouble("L1.Longitude"))),
+                    new Location(result.getInt("L1.ID"), result.getDouble("L1.Longitude"), result.getDouble("L1.Latitude"),
+                            getDistanceFromLatLonInKm(result.getDouble("L1.Latitude"), result.getDouble("L1.Longitude"),
+                                    result.getDouble("L2.Latitude"), result.getDouble("L2.Longitude"))
+                    ),
                     new Range((long)result.getInt("L2.TimeAndDate"),(long)result.getInt("L1.TimeAndDate")),
                     false
             );
@@ -122,4 +124,28 @@ public class InteractionsList
 
     public void setPeopleList(PeopleList people){personList = people;}
     public void clearPeopleList(){personList = null;}
+
+
+
+    private double getDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6371; // Radius of the earth in km
+        double dLat = deg2rad(lat2-lat1);  // deg2rad below
+        double dLon = deg2rad(lon2-lon1);
+        double a =
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                                Math.sin(dLon/2) * Math.sin(dLon/2)
+                ;
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = R * c; // Distance in km
+        return d;
+    }
+
+    private double deg2rad(double deg) {
+        return deg * (Math.PI/180);
+    }
+
+    private double normalize(double e){
+        return e/0.02840;
+    }
 }

@@ -105,14 +105,9 @@ public class Person
      * Not the nicest statement in the for loop but whatever it works.
      */
     public void buildRelationshipInfectionChance(){
-        ArrayList<Double> maxValues = new ArrayList<Double>();
         for(Map.Entry<Integer, Relationship> entry: relationships.entrySet()){
-            maxValues = entry.getValue().computeInfectionLikeliHood(maxInteractions, maxAverage, highestLikelihood);
-            maxInteractions = (int)(double) maxValues.get(0);
-            maxAverage = maxValues.get(1);
-            highestLikelihood = maxValues.get(2);
+           entry.getValue().computeInfectionLikeliHood();
         }
-        printRelationships();
     }
 
     public void printRelationships(){
