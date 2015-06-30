@@ -25,9 +25,14 @@ public class Relationship implements Comparable<Relationship> {
     private int timesInteracted;
 
     /**
-     * The average distance of Interaction.
+     * A variable to hold the average interaction length scaled by how close the two people were during the interaction.
      */
     private double averageInteractionLengthDistance = 0;
+
+    /**
+     * Constant to scale number of interactions used in the likelihood formula.
+     */
+    final private double interactionTimesConstant = 125 / 1400;
 
     /**
      * Constant for duration used in the likelihood formula.
@@ -81,6 +86,18 @@ public class Relationship implements Comparable<Relationship> {
     }
 
     /**
+     * Accessor method for the number of times the two people interacted.
+     * @return The number of interactions.
+     */
+    public int getTimesInteracted(){return timesInteracted;}
+
+    /**
+     * Acessor method for the average interaction duration scaled by how far apart the two people were during the interaction.
+     * @return The average interaction duration.
+     */
+    public double getAverageInteractionLengthDistance(){return averageInteractionLengthDistance;}
+
+    /**
      * Accessor method for the second Person in this Relationship.
      * @return the second Person in this Relationship
      */
@@ -113,23 +130,20 @@ public class Relationship implements Comparable<Relationship> {
         averageInteractionLengthDistance = (averageInteractionLengthDistance / timesInteracted) / 60000.0; //Gives us average interaction length in minutes
 
         /**
-         * If this is the first interaction seen, make a baseline to compare other relationships against.
-         *
-         * Note that increased interaction time should be inversely related to number of interactions.
+         * Combine these scaled factors to determine infection likelihood
          *
          * If someone works with someone else who is sick, they may get 2 interactions each day just on the nature
          *  of how these interactions are computed. These values will need to be tweaked, as I believe prolonged
          *  exposure is a better indicator than being close to someone multiple times, but it is a start.
          */
-        infectionLikelihood = averageInteractionLengthDistance + timesInteracted * durationConstant ;
+        infectionLikelihood = (averageInteractionLengthDistance + timesInteracted * interactionTimesConstant)*4 ;
     }
 
     /**
      * Calculates the infection likelihood of this relationship.
-     * YEAH! MATH BITCH!
      *
      * The attempts to get the mathematical model behind this method to produce valid
-     * results have failed, but have contributed to an alternate version of computing
+     * results have failed, but have contributed heavily to an alternate version of computing
      * the likelihood.
      */
     public void calcInfectionLiklihood()

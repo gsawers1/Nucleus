@@ -141,7 +141,7 @@ public class Interaction implements Comparable<Interaction> {
                 && ((timePeriod.getLowerBound()-otherPeriod.getUpperBound() < LOCATION_UPDATE_TIME
                         && timePeriod.getLowerBound()-otherPeriod.getUpperBound() > (-1 * LOCATION_UPDATE_TIME))
                     || (otherPeriod.getLowerBound()- timePeriod.getUpperBound() < LOCATION_UPDATE_TIME)
-                        && otherPeriod.getLowerBound()- timePeriod.getUpperBound() < (-1 * LOCATION_UPDATE_TIME)))
+                        && otherPeriod.getLowerBound()- timePeriod.getUpperBound() > (-1 * LOCATION_UPDATE_TIME)))
             return true;
         else
             return false;

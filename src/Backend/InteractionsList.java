@@ -74,7 +74,7 @@ public class InteractionsList
                     false
                     );
 
-                    Interaction nextB = new Interaction(i++,
+            Interaction nextB = new Interaction(i++,
                     personList.getPerson(personIDB),
                     personList.getPerson(personIDA),
                     new Location(result.getInt("L1.ID"), result.getDouble("L1.Longitude"), result.getDouble("L1.Latitude"),
@@ -102,7 +102,7 @@ public class InteractionsList
             areentrys = result.next();
 
         }
-        System.out.println(interactions.size());
+        System.out.println();
     }
 
     /**
@@ -111,7 +111,7 @@ public class InteractionsList
      * @return The set of interactions that the person is involved in.
      */
     public TreeSet<Interaction> getInteractionByPerson(Person target){
-        System.out.println("Creating Set for:" + target.getID());
+
         TreeSet<Interaction> returnSet = new TreeSet<Interaction>();
         ArrayList<Interaction> targetSet;
         int id = target.getID();

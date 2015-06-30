@@ -1,5 +1,6 @@
 package Backend;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -169,6 +170,8 @@ public class Person
      */
     public void printRelationships(){
         System.out.println("Infection chances for: "+ firstName + " " + lastName);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+        System.out.println("Infection reported at: " + sdf.format(new Date(getInfectionRange().getLowerBound() + 86400000)));
         if(relationships.size() == 0){
             System.out.println("No relationships found that could have caused infection.");
         }
@@ -177,8 +180,12 @@ public class Person
             Relationship next = entry.getValue();
             Person other = next.getOtherPerson();
             double infectionlikelihood = next.getInfectionLikelihood();
-            System.out.println("Infection Likelihood from " + other.getFirstName()+
-                    " " + other.getLastName() + " is: " + next.getInfectionLikelihood());
+            System.out.println("Infection Likelihood from " + other.getFirstName() +
+                    " " + other.getLastName() + " is: " + next.getInfectionLikelihood()+
+                            "\n\t Number of times interacted: " + next.getTimesInteracted()+
+                            "\n\t Average scaled interaction length: " + next.getAverageInteractionLengthDistance() + "\n"
+            );
         }
+        System.out.println("\n");
     }
 }
