@@ -41,6 +41,8 @@ public class GenerateInserts{
 		double workLongitude = -122.084434;
 		double homeLatitude = 37.382843;
 		double homeLongitude = -122.224788;
+		double ronHomeLatitude = 39.158817;
+		double ronHomeLongitude = -106.741791;
 		double lunchLatitudeA = 37.421367;
 		double lunchLongitudeA = -122.083425;
 		double lunchLatitudeB = 37.416339;
@@ -52,8 +54,13 @@ public class GenerateInserts{
 		double homeWorkDifferenceLat= (workLatitude - homeLatitude) /5;
 		double homeWorkDifferenceLong = (workLongitude - homeLongitude) /5;
 
+		double hongKongLat = 21.453069;
+		double hongKongLong = 114.697266;
+
 		try{
 			for(int j = 0; j < 8; j++){
+
+
 				for(int i = 0; i< intervalsPerHour; i++){
 					bw.write(insertFormat + id +"," + homeLongitude + "," + homeLatitude + "," + currentTime + ", 1" + ");\n");
 					currentTime += millisecondsPer5Minutes;
@@ -221,7 +228,7 @@ public class GenerateInserts{
 					currentTime += millisecondsPer5Minutes;
 					id++;
 				}
-			
+
 				for(int i = 0; i< intervalsPerHour * 5; i++){
 					bw.write(insertFormat + id+"," + workLongitude + "," + workLatitude + "," + currentTime + ", 3" + ");\n");
 					currentTime += millisecondsPer5Minutes;
@@ -322,6 +329,20 @@ public class GenerateInserts{
 						currentTime += millisecondsPer5Minutes;
 						id++;
 					}
+				}
+
+			}
+			for(int j = 0; j< 8; j++){
+				for(int i = 0; i<intervalsPerHour*17; i++){
+					bw.write(insertFormat + id +"," + ronHomeLongitude + "," + ronHomeLatitude + "," + currentTime + ", 5" + ");\n");
+					currentTime += millisecondsPer5Minutes;
+					id++;
+					bw.write(insertFormat + id +"," + hongKongLong + "," + hongKongLat + "," + currentTime + ", 6" + ");\n");
+					currentTime += millisecondsPer5Minutes;
+					id++;
+					bw.write(insertFormat + id +"," + hongKongLong + "," + hongKongLat + "," + currentTime + ", 7" + ");\n");
+					currentTime += millisecondsPer5Minutes;
+					id++;
 				}
 			}
 

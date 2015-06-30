@@ -37,12 +37,12 @@ public class Relationship implements Comparable<Relationship> {
     /**
      * Constant for duration used in the likelihood formula.
      */
-    final private double durationConstant = 100 / 1400;
+    final private double durationConstant = 100 / 1440;
 
     /**
      * Constant for distance used in the likelihood formula.
      */
-    final private double radiusConstant = 100 / 49;
+    final private double radiusConstant = 75 / 49;
 
     /**
      * Constant for infection number used in the likelihood formula.
@@ -89,7 +89,7 @@ public class Relationship implements Comparable<Relationship> {
      * Accessor method for the number of times the two people interacted.
      * @return The number of interactions.
      */
-    public int getTimesInteracted(){return timesInteracted;}
+    public int getTimesInteracted(){return interactions.size();}
 
     /**
      * Acessor method for the average interaction duration scaled by how far apart the two people were during the interaction.
@@ -121,7 +121,7 @@ public class Relationship implements Comparable<Relationship> {
      * Algorithm to compute the likelihood that this relationship caused the infection
      * For now will simply be hard values based on research to indicate the infection likelihood.
      */
-    public void computeInfectionLikeliHood() {
+    public void computeInfectionLikeliHood(int numTotalInteractions) {
         timesInteracted = interactions.size();
 
         for (Interaction i : interactions) {
@@ -131,12 +131,10 @@ public class Relationship implements Comparable<Relationship> {
 
         /**
          * Combine these scaled factors to determine infection likelihood
-         *
-         * If someone works with someone else who is sick, they may get 2 interactions each day just on the nature
-         *  of how these interactions are computed. These values will need to be tweaked, as I believe prolonged
-         *  exposure is a better indicator than being close to someone multiple times, but it is a start.
          */
-        infectionLikelihood = (averageInteractionLengthDistance + timesInteracted * interactionTimesConstant)*4 ;
+        infectionLikelihood = (averageInteractionLengthDistance + (timesInteracted/numTotalInteractions) * interactionTimesConstant)*5 ;
+        if(infectionLikelihood > 100.0)
+            infectionLikelihood = 100.0;
     }
 
     /**
@@ -146,85 +144,79 @@ public class Relationship implements Comparable<Relationship> {
      * results have failed, but have contributed heavily to an alternate version of computing
      * the likelihood.
      */
-    public void calcInfectionLiklihood()
+    public void calcInfectionLiklihood(int numTotalInteractions)
     {
+
+        double averageInteractionLength = 0;
+        double averageRadius = 0;
         int numInteractions = interactions.size();
 
         //Maps to track the mode duration and mode radius
         HashMap<Long, Integer> durationModeMap = new HashMap<Long, Integer>();
-        HashMap<Long, Integer> radiusModeMap = new HashMap<Long, Integer>();
+        HashMap<Double, Integer> radiusModeMap = new HashMap<Double, Integer>();
 
         long maxDuration = 0;
-        long maxRadius = 0;
-
-        //Count of the appearances of the max duration and radius in the interactions
-        int maxDurationCount = 1;
-        int maxRadiusCount = 1;
+        double maxRadius = 1.0;
 
         //Run through the interactions once to find the mode and max values
         //of the duration and radius. The radius is being truncated to a
         //long for ease of comparison
         for (Interaction interact : interactions) {
             long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (long) interact.getPlace().getRadius();
+            double tempRadius = interact.getPlace().getRadius();
+            //System.out.println("Temp Radius: " + tempRadius);
+            //tempRadius = Math.floor(tempRadius * 100) / 100;
 
             if (tempDuration > maxDuration)
                 maxDuration = tempDuration;
             if (tempRadius < maxRadius)
                 maxRadius = tempRadius;
 
-            //Add a count to the current interaction's duration/radius
-            try {
+            if(durationModeMap.containsKey(tempDuration))
                 durationModeMap.put(tempDuration, durationModeMap.get(tempDuration) + 1);
-                radiusModeMap.put(tempRadius, radiusModeMap.get(tempRadius) + 1);
-            }
-            catch (NullPointerException except) {
+            else
                 durationModeMap.put(tempDuration, 1);
+
+            if(radiusModeMap.containsKey(tempRadius))
+                radiusModeMap.put(tempRadius, radiusModeMap.get(tempRadius) + 1);
+            else
                 radiusModeMap.put(tempRadius, 1);
-            }
+
+            averageInteractionLength += tempDuration;
+            averageRadius += tempRadius;
         }
 
-        //Extract the actual mode values and sort them to find the highest
-        ArrayList<Integer> modeDurationCountList = new ArrayList<Integer>(durationModeMap.values());
-        ArrayList<Integer> modeRadiusCountList = new ArrayList<Integer>(radiusModeMap.values());
-        Collections.sort(modeDurationCountList);
-        Collections.sort(modeRadiusCountList);
 
         //Averages for duration/radius based on appearance of each interaction value
         double sumDuration = 0;
         double sumRadius = 0;
 
-        //Run through the interactions a second time to count the occurrences of
-        //the max values for duration/radius and compute the averages
-        for (Interaction interact : interactions) {
-            long tempDuration = interact.getTimePeriod().getDuration();
-            long tempRadius = (long) interact.getPlace().getRadius();
-
-            if (tempDuration == maxDuration)
-                ++maxDurationCount;
-            if (tempRadius == maxRadius)
-                ++maxRadiusCount;
-
-            sumDuration += tempDuration * durationModeMap.get(tempDuration);
-            sumRadius += tempRadius * radiusModeMap.get(tempRadius);
+        int frequentRadiusCount = 1;
+        int frequentDurationCount = 1;
+        for(Map.Entry<Long, Integer> entry : durationModeMap.entrySet()){
+             if(entry.getValue() > frequentDurationCount)
+                 frequentDurationCount = entry.getValue();
         }
 
-        System.out.println("Max Duration Count: "+ numInteractions);
-
+        for(Map.Entry<Double, Integer> entry : radiusModeMap.entrySet()){
+            if(entry.getValue() > frequentRadiusCount)
+                frequentRadiusCount = entry.getValue();
+        }
 
         //Regression coefficients for the likelihood formula
-        double alpha = (maxDurationCount / numInteractions) *
-                (modeDurationCountList.get(modeDurationCountList.size() - 1) / (double) numInteractions);
-        double beta = (maxRadiusCount / numInteractions) *
-                (modeRadiusCountList.get(modeRadiusCountList.size() - 1) / (double) numInteractions);
-        double gamma = (double) numInteractions / originalInteractionSetSize;
+        double alpha = (durationModeMap.get(maxDuration)/numInteractions + frequentDurationCount/numInteractions)*100;
+        double beta = radiusModeMap.get(maxRadius)/numInteractions * frequentRadiusCount/numInteractions;
+        double gamma = numInteractions/numTotalInteractions;
+
+        double alphaComputation = alpha * durationConstant * averageInteractionLength;
+        double betaComputation = beta * (100 + radiusConstant * (1+averageRadius));
+        double gammaComputation = gamma * 0.5;
 
         System.out.println("Alpha: " + alpha + ", Beta: " + beta + ", Gamma:" + gamma);
 
         //Infection likelihood formula
-        infectionLikelihood =  alpha * durationConstant * (sumDuration / numInteractions) +
-                beta  * (100 + radiusConstant * (sumRadius / numInteractions)) +
-                gamma * numInteractions;
+        infectionLikelihood =  alphaComputation + betaComputation + gammaComputation;
+
     }
 
     /**

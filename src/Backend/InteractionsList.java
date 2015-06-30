@@ -116,9 +116,13 @@ public class InteractionsList
         ArrayList<Interaction> targetSet;
         int id = target.getID();
 
-        targetSet = interactions.get(id);
-        for(Interaction i : targetSet)
-            returnSet.add(i);
+        if(interactions.containsKey(id)) {
+            targetSet = interactions.get(id);
+            for (Interaction i : targetSet) {
+                returnSet.add(i);
+            }
+        }
+
 
         return returnSet;
     }
@@ -153,7 +157,7 @@ public class InteractionsList
                 ;
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = R * c; // Distance in km
-        return d;
+        return normalize(d);
     }
 
     /**
